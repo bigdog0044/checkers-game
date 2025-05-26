@@ -27,15 +27,16 @@ enum PlayerTeam{
 }
 class CheckerBoard {
     private int[][] board;
-    private int total;
+    private CheckerPieces[] player1Pieces; 
+    private CheckerPieces[] player2Pieces; 
     /* 
      * 0 = black
      * 1 = white
     */
-    public CheckerBoard(int size1, int size2){
-        this.board = new int[size1][size2];
-        this.total = 0;
-
+    public CheckerBoard(int rowSize, int colSize){
+        this.board = new int[rowSize][colSize];
+        this.player1Pieces = new CheckerPieces[(int)rowSize*2];
+        this.player2Pieces = new CheckerPieces[(int)rowSize*2];
         //used to actually setup the board ready for players to be added onto the board
         this.board = SetUpBoard(this.board);
         SetUpBoardPlayers(this.board);
@@ -103,20 +104,35 @@ class CheckerBoard {
         return board;
     }
 
+    //their seems to be a better way of sorting this out, will come back later and redo
     private void SetUpBoardPlayers(int[][] board){
+        /*
+         * This is used to setup the starting position the player will be at 
+         */
         //Player 2
+        int pl2ArrCount = 0;
+        int pl1ArrCount = 0;
         for(int x = 0; x < 2; x++){
             for(int y = 0; y < board[x].length; y++){
                 if(board[x][y] == 0){
                     board[x][y] = 3;
+
+                    //adding the checker pieces to a seperate array
+                    player2Pieces[pl2ArrCount] = new CheckerPieces(x,y, PlayerTeam.PLAYER2, PlayerTeam.PLAYER2.name());
+                    pl2ArrCount++;
                 }
             }
         }
         
+        //player 1
         for(int x = board[0].length - 2; x < board[0].length; x++){
             for(int y = 0; y < board[0].length; y++){
                 if(board[x][y] == 0){
                     board[x][y] = 2;
+                    
+                    //adding the checker pieces to a seperate array
+                    player1Pieces[pl1ArrCount] = new CheckerPieces(x,y, PlayerTeam.PLAYER1, PlayerTeam.PLAYER1.name());
+                    pl1ArrCount++;
                 }
             }
         }
