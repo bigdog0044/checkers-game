@@ -29,6 +29,7 @@ class CheckerBoard {
     //public Colour getSquareName(int location1, int location2){return this.board[location1][location2];}
     
     public Colour[][] boardStatus(){ return this.board;}
+
     public void rendarBoard(){
         int rowNum = 1;
         for(Colour[] row : this.board){
@@ -46,14 +47,15 @@ class CheckerBoard {
                 }
             }
             System.out.println();
+
+            //will improve later since this isn't the best implementation in my view
+            if(rowNum == this.board[0].length){
+                for(int i = 1; i < this.board[0].length + 1; i++){
+                    System.out.print("   " + i + "   ");
+                }
+            }
             rowNum += 1;
         }
-
-        //used for outputting column numbers
-        for(int i = 1; i < board[0].length + 1; i++){
-            System.out.print(i + " ");
-        }
-
     }
 
     private Colour[][] SetUp(Colour[][] board){
