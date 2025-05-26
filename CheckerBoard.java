@@ -23,10 +23,12 @@ class CheckerBoard {
         this.total = 0;
 
         //used to actually setup the board ready for players to be added onto the board
-        this.board = SetUp(this.board);
+        this.board = SetUpBoard(this.board);
     }
 
-    //public Colour getSquareName(int location1, int location2){return this.board[location1][location2];}
+    public Colour getSquare(int location1, int location2){
+        return this.board[location1][location2];
+    }
     
     public Colour[][] boardStatus(){ return this.board;}
 
@@ -53,12 +55,14 @@ class CheckerBoard {
                 for(int i = 1; i < this.board[0].length + 1; i++){
                     System.out.print("   " + i + "   ");
                 }
+
+                System.out.println();
             }
             rowNum += 1;
         }
     }
 
-    private Colour[][] SetUp(Colour[][] board){
+    private Colour[][] SetUpBoard(Colour[][] board){
         for(int x = 0; x < board.length; x++){
             for(int y = 0; y < board[0].length; y++){
                 if((y + x) % 2 == 0){
