@@ -33,7 +33,7 @@ class CheckerBoard {
     public Colour[][] boardStatus(){ return this.board;}
 
     public void rendarBoard(){
-        int rowNum = 8;
+        int rowNum = this.board[0].length;
         for(Colour[] row : this.board){
             System.out.print(rowNum);
             for(Colour value : row){
@@ -51,7 +51,7 @@ class CheckerBoard {
             System.out.println();
 
             //will improve later since this isn't the best implementation in my view
-            if(rowNum == this.board[0].length){
+            if(rowNum == this.board[0].length - (this.board[0].length - 1)){
                 for(int i = 1; i < this.board[0].length + 1; i++){
                     System.out.print("   " + i + "   ");
                 }
