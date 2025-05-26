@@ -1,7 +1,15 @@
-
-
 enum Colour{
-    WHITE,BLACK
+    WHITE(1),BLACK(0);
+
+    private int value;
+    
+    public int getColourValue(){
+        return this.value;
+    }
+
+    private Colour(int value){
+        this.value = value;
+    }
 }
 class CheckerBoard {
     private int[][] board;
