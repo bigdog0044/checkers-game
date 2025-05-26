@@ -45,6 +45,27 @@ class CheckerBoard {
     public int getSquare(int location1, int location2){
         return this.board[location1][location2];
     }
+
+    public CheckerPieces returnCheckerPiece(int rowPos, int colPos, PlayerTeam player){
+        CheckerPieces piece = null;
+        if(player == PlayerTeam.PLAYER2){
+            for(int i = 0; i <player2Pieces.length; i++){
+                if(player2Pieces[i].getLocation()[0][0] == rowPos && player2Pieces[i].getLocation()[1][0] == rowPos){
+                    piece = player2Pieces[i];
+                    i = player2Pieces.length;
+                }
+            }
+        } else {
+            for(int i = 0; i <player1Pieces.length; i++){
+                if(player1Pieces[i].getLocation()[0][0] == rowPos && player1Pieces[i].getLocation()[1][0] == rowPos){
+                    piece = player1Pieces[i];
+                    i = player1Pieces.length;
+                }
+            }
+        }
+        
+        return piece;
+    }
     
     public int[][] boardStatus(){ return this.board;}
 
@@ -129,7 +150,7 @@ class CheckerBoard {
             for(int y = 0; y < board[0].length; y++){
                 if(board[x][y] == 0){
                     board[x][y] = 2;
-                    
+
                     //adding the checker pieces to a seperate array
                     player1Pieces[pl1ArrCount] = new CheckerPieces(x,y, PlayerTeam.PLAYER1, PlayerTeam.PLAYER1.name());
                     pl1ArrCount++;
