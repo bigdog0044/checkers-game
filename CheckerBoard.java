@@ -12,32 +12,33 @@ enum Colour{
     }
 }
 class CheckerBoard {
-    private int[][] board;
+    private Colour[][] board;
     private int total;
     /* 
      * 0 = black
      * 1 = white
     */
     public CheckerBoard(int size1, int size2){
-        this.board = new int[size1][size2];
+        this.board = new Colour[size1][size2];
         this.total = 0;
 
         //used to actually setup the board ready for players to be added onto the board
         this.board = SetUp(this.board);
     }
 
-
-    public int[][] boardStatus(){ return this.board;}
+    //public Colour getSquareName(int location1, int location2){return this.board[location1][location2];}
+    
+    public Colour[][] boardStatus(){ return this.board;}
     public void rendarBoard(){
         int rowNum = 1;
-        for(int[] row : this.board){
+        for(Colour[] row : this.board){
             System.out.print(rowNum);
-            for(int value : row){
+            for(Colour value : row){
                 switch (value) {
-                    case 0:
+                    case BLACK:
                         System.out.print(" " + Colour.BLACK + " ");
                         break;
-                    case 1:
+                    case WHITE:
                         System.out.print(" " + Colour.WHITE + " ");
                         break;
                     default:
@@ -55,13 +56,13 @@ class CheckerBoard {
 
     }
 
-    private int[][] SetUp(int[][] board){
+    private Colour[][] SetUp(Colour[][] board){
         for(int x = 0; x < board.length; x++){
             for(int y = 0; y < board[0].length; y++){
                 if((y + x) % 2 == 0){
-                    board[x][y] = 1;
+                    board[x][y] = Colour.WHITE;
                 } else {
-                    board[x][y] = 0;
+                    board[x][y] = Colour.BLACK;
                 }
             }
         }

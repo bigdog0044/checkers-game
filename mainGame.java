@@ -2,5 +2,7 @@ public class mainGame {
         public static void main(String[] args){
         CheckerBoard board = new CheckerBoard(8,8);
         board.rendarBoard();
+
+        System.out.println("Value: " + board.boardStatus()[0][0]);
     }
 }
