@@ -1,3 +1,5 @@
+
+
 enum Colour{
     WHITE,BLACK
 }
@@ -18,28 +20,34 @@ class CheckerBoard {
 
 
     public int[][] boardStatus(){ return this.board;}
-
     public void rendarBoard(){
+        int rowNum = 1;
         for(int[] row : this.board){
+            System.out.print(rowNum);
             for(int value : row){
                 switch (value) {
                     case 0:
-                        System.out.print(" Black ");
+                        System.out.print(" " + Colour.BLACK + " ");
                         break;
                     case 1:
-                        System.out.print(" White ");
+                        System.out.print(" " + Colour.WHITE + " ");
                         break;
                     default:
                         break;
                 }
             }
             System.out.println();
+            rowNum += 1;
+        }
+
+        //used for outputting column numbers
+        for(int i = 1; i < board[0].length + 1; i++){
+            System.out.print(i + " ");
         }
 
     }
 
     private int[][] SetUp(int[][] board){
-        boolean isBlackTile = true;
         for(int x = 0; x < board.length; x++){
             for(int y = 0; y < board[0].length; y++){
                 if((y + x) % 2 == 0){
