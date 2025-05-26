@@ -3,7 +3,6 @@ public class mainGame {
         CheckerBoard board = new CheckerBoard(8,8);
         CheckerPieces piece1 = new CheckerPieces(0,1,PlayerTeam.PLAYER1, "test");
         
-        board.setValue(1, 3, 3);
         board.rendarBoard();
     }
 }

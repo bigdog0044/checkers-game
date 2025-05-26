@@ -38,7 +38,7 @@ class CheckerBoard {
 
         //used to actually setup the board ready for players to be added onto the board
         this.board = SetUpBoard(this.board);
-        //SetUpBoardPlayer1(this.board);
+        SetUpBoardPlayers(this.board);
     }
 
     public int getSquare(int location1, int location2){
@@ -103,11 +103,20 @@ class CheckerBoard {
         return board;
     }
 
-    private void SetUpBoardPlayer1(Colour[][] board){
+    private void SetUpBoardPlayers(int[][] board){
+        //Player 2
         for(int x = 0; x < 2; x++){
             for(int y = 0; y < board[x].length; y++){
-                if(board[x][y] == Colour.BLACK){
-                    
+                if(board[x][y] == 0){
+                    board[x][y] = 3;
+                }
+            }
+        }
+        
+        for(int x = board[0].length - 2; x < board[0].length; x++){
+            for(int y = 0; y < board[0].length; y++){
+                if(board[x][y] == 0){
+                    board[x][y] = 2;
                 }
             }
         }
