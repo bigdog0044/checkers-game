@@ -11,38 +11,65 @@ enum Colour{
         this.value = value;
     }
 }
+
+//used to assign a enum value to a team the checker piece is associated with
+enum PlayerTeam{
+    PLAYER1(2), PLAYER2(3);
+
+    private int team;
+    private PlayerTeam(int value){
+        this.team = value;
+    }
+
+    public int getValue(){
+        return this.team;
+    }
+}
 class CheckerBoard {
-    private Colour[][] board;
+    private int[][] board;
     private int total;
     /* 
      * 0 = black
      * 1 = white
     */
     public CheckerBoard(int size1, int size2){
-        this.board = new Colour[size1][size2];
+        this.board = new int[size1][size2];
         this.total = 0;
 
         //used to actually setup the board ready for players to be added onto the board
         this.board = SetUpBoard(this.board);
+        //SetUpBoardPlayer1(this.board);
     }
 
-    public Colour getSquare(int location1, int location2){
+    public int getSquare(int location1, int location2){
         return this.board[location1][location2];
     }
     
-    public Colour[][] boardStatus(){ return this.board;}
+    public int[][] boardStatus(){ return this.board;}
+
+    //remove once done testing
+    public void setValue(int row, int col, int value){
+        this.board[row][col] = value;
+    }
 
     public void rendarBoard(){
         int rowNum = this.board[0].length;
-        for(Colour[] row : this.board){
+        for(int[] row : this.board){
             System.out.print(rowNum);
-            for(Colour value : row){
+            for(int value : row){
                 switch (value) {
-                    case BLACK:
+                    case 0:
                         System.out.print(" " + Colour.BLACK + " ");
                         break;
-                    case WHITE:
+                    case 1:
                         System.out.print(" " + Colour.WHITE + " ");
+                        break;
+                    case 2:
+                        System.out.print( " " + PlayerTeam.PLAYER1 + " ");
+                        break;
+
+                    case 3:
+                        System.out.print( " " + PlayerTeam.PLAYER2 + " ");
                         break;
                     default:
                         break;
@@ -62,17 +89,27 @@ class CheckerBoard {
         }
     }
 
-    private Colour[][] SetUpBoard(Colour[][] board){
+    private int[][] SetUpBoard(int[][] board){
         for(int x = 0; x < board.length; x++){
             for(int y = 0; y < board[0].length; y++){
                 if((y + x) % 2 == 0){
-                    board[x][y] = Colour.WHITE;
+                    board[x][y] = 0; //white
                 } else {
-                    board[x][y] = Colour.BLACK;
+                    board[x][y] = 1; //black tile
                 }
             }
         }
 
         return board;
+    }
+
+    private void SetUpBoardPlayer1(Colour[][] board){
+        for(int x = 0; x < 2; x++){
+            for(int y = 0; y < board[x].length; y++){
+                if(board[x][y] == Colour.BLACK){
+                    
+                }
+            }
+        }
     }
 }
