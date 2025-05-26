@@ -33,7 +33,7 @@ class CheckerBoard {
     public Colour[][] boardStatus(){ return this.board;}
 
     public void rendarBoard(){
-        int rowNum = 1;
+        int rowNum = 8;
         for(Colour[] row : this.board){
             System.out.print(rowNum);
             for(Colour value : row){
@@ -58,7 +58,7 @@ class CheckerBoard {
 
                 System.out.println();
             }
-            rowNum += 1;
+            rowNum -= 1;
         }
     }
 
