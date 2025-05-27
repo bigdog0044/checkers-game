@@ -42,6 +42,9 @@ class CheckerBoard {
         SetUpBoardPlayers(this.board);
     }
 
+    public int returnRowLen(){return this.board[0].length;}
+    public int returnColLen(){return this.board[1].length;}
+
     public int getSquare(int location1, int location2){
         return this.board[location1][location2];
     }
