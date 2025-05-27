@@ -8,13 +8,13 @@ class CheckerGameLogic {
     }
 
     private boolean validMove(int[][] requestedPos, CheckerPieces piece){
-        System.out.print(piece.getLocation()[0][0] + " ");
-        System.out.println(piece.getLocation()[1][0]);
+        if(requestedPos[0] < )
         return false;
     }
     /*
      * things to write
      * chance piece to queen once it has gotten to the end of the board
      * valid move calculator
+     * implement player hit detection
      */
 }

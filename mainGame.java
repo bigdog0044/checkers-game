@@ -6,6 +6,11 @@ public class mainGame {
         
         board.rendarBoard();
 
-        //gameLogic.isValidMove({{0},{0}}, board.getSquare(7, 1));
+
+        //System.out.println(board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1).getLocation()[0][0]);
+        
+        CheckerPieces player = board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1);
+        int[][] reqPos = {{0},{0}};
+        gameLogic.isValidMove(reqPos, player);
     }
 }
