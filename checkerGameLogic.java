@@ -95,7 +95,7 @@ class CheckerGameLogic {
                 nextRow = curPieceLocationRow + 1;
                 nextCol = curPieceLocationCol + 1;
 
-                //add logic in when the player is on the left and right most side of the board
+                //
                 valueAtSqr = board.getSquare(nextRow, nextCol);
             }
             //assigning the values into the result array
