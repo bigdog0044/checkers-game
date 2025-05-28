@@ -1,5 +1,6 @@
 # checkers-game
-to do list
+
+# to do list
 
 chance piece to queen once it has gotten to the end of the board
 valid move calculator
@@ -8,7 +9,7 @@ actual implement the player movement method
 fix bug with returnCheckerPiece method returning null which results in errors
 
 
-in more general sense to do list
+# in more general sense to do list
 
 -develop checker system
 -develop server communication
