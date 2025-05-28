@@ -1,5 +1,13 @@
 enum Direction{
-    LEFT,RIGHT 
+    LEFT(1),RIGHT(2);
+    
+    private int directionVal;
+
+    private Direction(int val){
+        this.directionVal = val;
+    }
+
+    public int getDirectionValue(){return this.directionVal;}
 }
 class CheckerGameLogic {
     public boolean isValidMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction){
@@ -21,9 +29,13 @@ class CheckerGameLogic {
         }
 
 
-        moveCalculation(board, piece, direction);
-        
+        int[][] moveCalcResult = moveCalculation(board, piece, direction);
 
+        for(int[] row : moveCalcResult){
+            for(int value : row){
+                System.out.print(value + " ");
+            }
+        }
         return true;
     }
 
@@ -46,27 +58,26 @@ class CheckerGameLogic {
         if(piece.getTeam() == PlayerTeam.PLAYER1){
             curPieceLocationRow = piece.getLocation()[0];
             curPieceLocationCol = piece.getLocation()[1];
-            
-            nextRow = curPieceLocationRow - 1;
-            nextCol = curPieceLocationCol - 1;
-            
+
             //note to future self: rewrite this with a custom exception
             //used to provide the value at a specific square
-            if (!(nextRow < 0 && nextCol - 1 > board.returnRowLen())){
-                if(direction == Direction.LEFT){
-                    valueAtSqr = board.getSquare(curPieceLocationRow - 1, curPieceLocationCol - 1);
-                } else{
-                    valueAtSqr = board.getSquare(curPieceLocationRow - 1, curPieceLocationCol + 1);
-                }
+
+            if(direction.getDirectionValue() == 1){
+                nextRow = curPieceLocationRow - 1;
+                nextCol = curPieceLocationCol - 1;
+                
+                valueAtSqr = board.getSquare(nextRow, nextCol);
             } else{
-                return null; //error has occured
+                nextRow = curPieceLocationRow - 1;
+                nextCol = curPieceLocationCol + 1;
+                valueAtSqr = board.getSquare(nextRow, nextCol);
             }
             
             //assigning the values into the result array
             result[0][0] = nextRow;
             result[0][1] = nextCol;
             result[1][0] = valueAtSqr;
-            result[1][1] = 0;
+            result[1][1] = -2;
             
             return  result;
         } else {
@@ -74,37 +85,31 @@ class CheckerGameLogic {
             curPieceLocationRow = piece.getLocation()[0];
             curPieceLocationCol = piece.getLocation()[1];
             
-            nextRow = curPieceLocationRow - 1;
-            nextCol = curPieceLocationCol - 1;
             
-            //note to future self: rewrite this with a custom exception
-            //used to provide the value at a specific square
-            if (!(nextRow < 0 && nextCol - 1 > board.returnRowLen())){
-                if(direction == Direction.LEFT){
-                    valueAtSqr = board.getSquare(curPieceLocationRow + 1, curPieceLocationCol - 1);
-                } else{
-                    valueAtSqr = board.getSquare(curPieceLocationRow + 1, curPieceLocationCol + 1);
-                }
+            //note to future self: rewrite this with a custom exceptio
+            if(direction.getDirectionValue() == 1){
+                nextRow = curPieceLocationRow + 1;
+                nextCol = curPieceLocationCol - 1;
+                valueAtSqr = board.getSquare(nextRow, nextCol);
             } else{
-                return null; //error has occured
+                nextRow = curPieceLocationRow + 1;
+                nextCol = curPieceLocationCol + 1;
+
+                //add logic in when the player is on the left and right most side of the board
+                valueAtSqr = board.getSquare(nextRow, nextCol);
             }
-            
             //assigning the values into the result array
             result[0][0] = nextRow;
             result[0][1] = nextCol;
             result[1][0] = valueAtSqr;
-            result[1][1] = 0;
+            result[1][1] = -1;
             
             return  result;
         }
     }
-    /*
-    * things to write
-    * chance piece to queen once it has gotten to the end of the board
-    * valid move calculator
-    * implement player hit detection
-    * actual implement the player movement method
-    */
+
+    //private void playerHitDetection()
+
     /*
      * Used to retrieve information about a player
      * @arguments board - takes the game board

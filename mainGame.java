@@ -10,7 +10,7 @@ public class mainGame {
         
         //System.out.println(board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1).getLocation()[0][0]);
         
-        CheckerPieces player = board.returnCheckerPiece(1, 3, PlayerTeam.PLAYER2);
+        CheckerPieces player = board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1);
         int[] reqPos = {7,1};
         boolean result = gameLogic.isValidMove(reqPos , player, board,Direction.LEFT);
         
@@ -18,7 +18,7 @@ public class mainGame {
         System.out.println();
         System.out.println("Below is the actual board rendered");
         System.out.println();
-
+            
         board.rendarBoard();
     }
 }

@@ -52,14 +52,14 @@ class CheckerBoard {
     public CheckerPieces returnCheckerPiece(int rowPos, int colPos, PlayerTeam player){
         CheckerPieces piece = null;
         if(player == PlayerTeam.PLAYER2){
-            for(int i = 0; i <player2Pieces.length; i++){
+            for(int i = 0; i <player2Pieces.length + 1; i++){
                 if(player2Pieces[i].getLocation()[0] == rowPos && player2Pieces[i].getLocation()[1] == colPos){
                     piece = player2Pieces[i];
                     i = player2Pieces.length;
                 }
             }
         } else {
-            for(int i = 0; i <player1Pieces.length; i++){
+            for(int i = 0; i <player1Pieces.length + 1; i++){
                 if(player1Pieces[i].getLocation()[0] == rowPos && player1Pieces[i].getLocation()[1] == colPos){
                     piece = player1Pieces[i];
                     i = player1Pieces.length;
