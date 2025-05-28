@@ -1,19 +1,19 @@
 class CheckerPieces{
-    private int[][] location;
+    private int[] location;
     private PlayerTeam team;
     private String CheckerName;
     private boolean isQueen;
 
     public CheckerPieces(int rowNum, int colNum, PlayerTeam team, String name){
-        this.location = new int[2][1];
-        this.location[0][0] = rowNum;
-        this.location[1][0] = colNum;
+        this.location = new int[2];
+        this.location[0] = rowNum;
+        this.location[1] = colNum;
         this.team = team;
         this.CheckerName = name;
         this.isQueen = false;
     }
 
-    public int[][] getLocation(){
+    public int[] getLocation(){
         return this.location;
     }
 
