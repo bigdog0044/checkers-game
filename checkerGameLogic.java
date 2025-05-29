@@ -28,7 +28,7 @@ class CheckerGameLogic {
             return false;
         }
 
-
+        //remove once done since this shouldn't be here
         int[][] moveCalcResult = moveCalculation(board, piece, direction);
 
         for(int[] row : moveCalcResult){
@@ -94,8 +94,6 @@ class CheckerGameLogic {
             } else{
                 nextRow = curPieceLocationRow + 1;
                 nextCol = curPieceLocationCol + 1;
-
-                //
                 valueAtSqr = board.getSquare(nextRow, nextCol);
             }
             //assigning the values into the result array
@@ -108,7 +106,18 @@ class CheckerGameLogic {
         }
     }
 
-    //private void playerHitDetection()
+    /*
+    * this method is used to calculate if a player has hit another player
+    * @argument board - used to get the current board layout
+    * @argumnent piece - used to get the current checker piece (i.e player)
+    * @argument location - used to find what location is being checked
+    * @return true if player has hit another player, false otherwise
+    */
+    private boolean playerHitDetection(CheckerBoard board, CheckerPieces piece, int[][] location){
+        
+
+        return true;
+    }
 
     /*
      * Used to retrieve information about a player
