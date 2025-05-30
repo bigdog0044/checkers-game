@@ -1,3 +1,11 @@
+//defining a custom error for if the player does a move which isn't possible
+class IllegalMove extends Exception{
+    public IllegalMove (String errMSG){
+        super(errMSG);
+    }
+}
+
+
 enum Direction{
     LEFT(1),RIGHT(2);
     
@@ -10,7 +18,7 @@ enum Direction{
     public int getDirectionValue(){return this.directionVal;}
 }
 class CheckerGameLogic {
-    public boolean isValidMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction){
+    public boolean isValidMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction) throws IllegalMove{
         //non-queen valid moove checker
         if (!(piece.getQueenStatus())){
             return validMove(reqPos,piece, board, direction);
@@ -18,14 +26,14 @@ class CheckerGameLogic {
         return false;
     }
 
-    private boolean validMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction){
+    private boolean validMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction) throws IllegalMove{
         //checks to see if player has requested a position which falls out of range of the board
         if (reqPos[0] > board.returnRowLen() || reqPos[1] > board.returnColLen()){
-            return false;
+            throw new IllegalMove("Invalid move: selected move is outside of board");
         }
         
         if (reqPos[0] < 0 || reqPos[1] < 0){
-            return false;
+            throw new IllegalMove("Invalid move: selected move is outside of board");
         }
 
         //remove once done since this shouldn't be here
@@ -66,7 +74,11 @@ class CheckerGameLogic {
                 nextRow = curPieceLocationRow - 1;
                 nextCol = curPieceLocationCol - 1;
                 
-                valueAtSqr = board.getSquare(nextRow, nextCol);
+                if(nextCol < 0 ){
+                    valueAtSqr = -1;
+                } else{
+                    valueAtSqr = board.getSquare(nextRow, nextCol);
+                }
             } else{
                 nextRow = curPieceLocationRow - 1;
                 nextCol = curPieceLocationCol + 1;
@@ -86,11 +98,18 @@ class CheckerGameLogic {
             curPieceLocationCol = piece.getLocation()[1];
             
             
-            //note to future self: rewrite this with a custom exceptio
+            //note to future self: rewrite this with a custom exceptions
             if(direction.getDirectionValue() == 1){
                 nextRow = curPieceLocationRow + 1;
                 nextCol = curPieceLocationCol - 1;
+
                 valueAtSqr = board.getSquare(nextRow, nextCol);
+
+                if(nextCol > board.returnRowLen() ){
+                    valueAtSqr = -1;
+                } else{
+                    valueAtSqr = board.getSquare(nextRow, nextCol);
+                }
             } else{
                 nextRow = curPieceLocationRow + 1;
                 nextCol = curPieceLocationCol + 1;

@@ -10,9 +10,15 @@ public class mainGame {
         
         //System.out.println(board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1).getLocation()[0][0]);
         
-        CheckerPieces player = board.returnCheckerPiece(7, 1, PlayerTeam.PLAYER1);
-        int[] reqPos = {7,1};
-        boolean result = gameLogic.isValidMove(reqPos , player, board,Direction.LEFT);
+        CheckerPieces player = board.returnCheckerPiece(6, 0, PlayerTeam.PLAYER1);
+        int[] reqPos = {10,1};
+        boolean result;
+        
+        try{
+            result = gameLogic.isValidMove(reqPos , player, board,Direction.LEFT);   
+        } catch(IllegalMove e){
+            System.out.println(e.getMessage());
+        }
         
         
         System.out.println();
