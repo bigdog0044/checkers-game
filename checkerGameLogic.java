@@ -36,8 +36,10 @@ class CheckerGameLogic {
             throw new IllegalMove("Invalid move: selected move is outside of board");
         }
 
-        //remove once done since this shouldn't be here
+        
         int[][] moveCalcResult = moveCalculation(board, piece, direction);
+
+
 
         for(int[] row : moveCalcResult){
             for(int value : row){
@@ -146,15 +148,15 @@ class CheckerGameLogic {
      * @arguments col - takes the column number
      * @returns either player1, player 2 or null which indicates no player has been found
      */
-    private CheckerPieces playerRetrieveInfo(CheckerBoard board, int value, int row , int col){
-        if(value == 2){
-            return board.returnCheckerPiece(row,col,PlayerTeam.PLAYER1);
-        }
+    // private CheckerPieces playerRetrieveInfo(CheckerBoard board, int value, int row , int col){
+    //     if(value == 2){
+    //         return board.returnCheckerPiece(row,col,PlayerTeam.PLAYER1);
+    //     }
         
-        if(value == 3){
-            return board.returnCheckerPiece(row,col,PlayerTeam.PLAYER2);
-        }
+    //     if(value == 3){
+    //         return board.returnCheckerPiece(row,col,PlayerTeam.PLAYER2);
+    //     }
     
-        return null;
-    }
+    //     return null;
+    // }
 }

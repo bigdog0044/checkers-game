@@ -1,3 +1,9 @@
+class InvalidPiece extends Exception{
+    public InvalidPiece(String value){
+        super(value);
+    }
+}
+
 enum Colour{
     WHITE(1),BLACK(0);
 
@@ -49,10 +55,14 @@ class CheckerBoard {
         return this.board[location1][location2];
     }
 
-    public CheckerPieces returnCheckerPiece(int rowPos, int colPos, PlayerTeam player){
+    public CheckerPieces returnCheckerPiece(int rowPos, int colPos, PlayerTeam player) throws InvalidPiece{
         CheckerPieces piece = null;
         if(player == PlayerTeam.PLAYER2){
+            
             for(int i = 0; i <player2Pieces.length + 1; i++){
+                if(player2Pieces[i] == null){
+                    throw new InvalidPiece("Error: No player at this location");
+                }
                 if(player2Pieces[i].getLocation()[0] == rowPos && player2Pieces[i].getLocation()[1] == colPos){
                     piece = player2Pieces[i];
                     i = player2Pieces.length;
@@ -60,12 +70,17 @@ class CheckerBoard {
             }
         } else {
             for(int i = 0; i <player1Pieces.length + 1; i++){
+                if(player1Pieces[i] == null){
+                    throw new InvalidPiece("Error: No player at this location");
+                }
+
                 if(player1Pieces[i].getLocation()[0] == rowPos && player1Pieces[i].getLocation()[1] == colPos){
                     piece = player1Pieces[i];
                     i = player1Pieces.length;
                 }
             }
         }
+        
         
         return piece;
     }
