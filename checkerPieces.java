@@ -19,6 +19,8 @@ class CheckerPieces{
 
     public PlayerTeam getTeam(){ return this.team;}
 
+    public void SetNewLocation(int[]location) {this.location = location;}
+
     public boolean getQueenStatus(){return this.isQueen;}
     // need one function to update the checker piece on relation to the board
 }

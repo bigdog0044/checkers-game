@@ -128,7 +128,7 @@ class CheckerBoard {
             }
             rowNum -= 1;
         }
-    }
+    } 
 
     private int[][] SetUpBoard(int[][] board){
         for(int x = 0; x < board.length; x++){

@@ -17,16 +17,9 @@ enum Direction{
 
     public int getDirectionValue(){return this.directionVal;}
 }
-class CheckerGameLogic {
-    public boolean isValidMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction) throws IllegalMove{
-        //non-queen valid moove checker
-        if (!(piece.getQueenStatus())){
-            return validMove(reqPos,piece, board, direction);
-        }
-        return false;
-    }
 
-    private boolean validMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction) throws IllegalMove{
+class CheckerGameLogic {
+    public boolean validMove(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction) throws IllegalMove{
         //checks to see if player has requested a position which falls out of range of the board
         if (reqPos[0] > board.returnRowLen() || reqPos[1] > board.returnColLen()){
             throw new IllegalMove("Invalid move: selected move is outside of board");
@@ -39,17 +32,33 @@ class CheckerGameLogic {
         
         int[][] moveCalcResult = moveCalculation(board, piece, direction);
 
-
-
-        for(int[] row : moveCalcResult){
-            for(int value : row){
-                System.out.print(value + " ");
-            }
+        //used to work out if the move is valid or not
+        if(moveCalcResult[0][0] != reqPos[0] || moveCalcResult[0][1] != reqPos[1]){
+            throw new IllegalMove("Error: invalid move. You have chosen a move which isn't allowed. Please enter the following coords " + moveCalcResult[0][0] + " " + moveCalcResult[0][1]);
         }
         return true;
     }
 
 
+    public void MovePlayer(int[] reqPos, CheckerPieces piece, CheckerBoard board, Direction direction){
+        int[][] moveCalcResult = moveCalculation(board, piece, direction);
+
+        //creates a new array which will be used to override the player piece location
+        int[] newLoc = new int[2];
+        int[] currentPlayerLoc = piece.getLocation();
+        newLoc[0] = moveCalcResult[0][0];
+        newLoc[1] = moveCalcResult[0][1];
+
+        piece.SetNewLocation(newLoc);
+
+        //setting the tile for which the player was on to black
+        board.setValue(currentPlayerLoc[0], currentPlayerLoc[1], 0);
+
+        board.setValue(newLoc[0], newLoc[1], piece.getTeam().getValue());
+
+
+
+    }
     
     /*
     * this method is used to calculate the two squares the player can move to

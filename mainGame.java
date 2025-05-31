@@ -12,10 +12,18 @@ public class mainGame {
         
         
         try{
-            CheckerPieces player = board.returnCheckerPiece(6, 1, PlayerTeam.PLAYER2);
-            int[] reqPos = {5,1};
+            Direction playerDir = Direction.LEFT;
+
+            CheckerPieces player = board.returnCheckerPiece(6, 0, PlayerTeam.PLAYER1);
+            int[] reqPos = {4,0};
             boolean result;
-            result = gameLogic.isValidMove(reqPos , player, board,Direction.RIGHT);   
+            result = gameLogic.validMove(reqPos , player, board,playerDir);
+
+            if(result){
+                gameLogic.MovePlayer(reqPos, player, board, playerDir);
+            }
+            
+            System.out.println(result);
         } catch(InvalidPiece | IllegalMove e){
             System.out.println(e.getMessage());
         }
