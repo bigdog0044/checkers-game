@@ -6,7 +6,7 @@
 - implement player hit detection
 - actual implement the player movement method
 - implement detection if player tries to move piece outside of board range
-- add logic in when the player is on the left and right most side of the board
+
 
 
 # in more general sense to do list
