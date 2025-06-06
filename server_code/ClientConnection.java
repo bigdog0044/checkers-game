@@ -5,28 +5,25 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-public class ClientConnection{
-    private static final int portNumber = 9000;
-    private static final String address = "localhost";
-    public static void main(String[] args) {
-        try {            
-            Socket socket = new Socket(address, portNumber);
-            BufferedWriter output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
-            BufferedReader incommingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+public class ClientConnection {
+    private static final String address = "127.0.0.1";
+    private static final int port = 9000;
+    public static void main(String[] args){
+        try {
+            Socket socket = new Socket(address,port);
+            BufferedReader incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            
-            
-            System.out.println("Server responded with: " + incommingMSG.readLine());
-            output.write("Sending this message because I'm so cool");
-            output.newLine();
-            output.flush();
-            
+
+            while(incomingMSG.readLine() != null){
+                System.out.println(incomingMSG.readLine());
+            }
+
             socket.close();
 
-            
         } catch (IOException e) {
-            System.out.println(e);
         }
+
 
     }
 }
