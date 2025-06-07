@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.UUID;
 
 class InvalidPortNumber extends Exception{
     public InvalidPortNumber(String value){
@@ -9,11 +10,7 @@ class InvalidPortNumber extends Exception{
 }
 
 public class ServerMain{
-    private int connectionNumber;
-
-    private int uniqueNumber(){
-        return (int)(Math.random() * 9000);
-    }
+    private String connectionID;
 
     public ServerMain(int portNumber)throws IOException{
         ServerSocket serverSocket = new ServerSocket(portNumber);
@@ -21,7 +18,9 @@ public class ServerMain{
 
         //this is used to accept incoming connections 
         while(true){
-            connectionNumber = uniqueNumber();
+            UUID uuid = UUID.randomUUID();
+
+            connectionID = uuid.toString();
 
 
             Socket clientSocket = serverSocket.accept();
@@ -35,7 +34,7 @@ public class ServerMain{
         }
     }
 
-    public int getConnectionNumber(){return  this.connectionNumber;}
+    public String getConnectionID(){return  this.connectionID;}
     public static void main(String[] args) throws InvalidPortNumber{
         try{
             if(args.length > 0){

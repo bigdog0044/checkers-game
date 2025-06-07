@@ -19,12 +19,12 @@ public class ServerThread implements  Runnable{
     @Override
     public void run(){
             try {
-                int clientNumber = serverMain.getConnectionNumber();
+                String connectionID = serverMain.getConnectionID();
                 BufferedWriter output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 output.write("Server listening.....awaiting communication");
                 output.newLine();
-                output.write("Your connection number is " + clientNumber);
+                output.write("Your connection number is " + connectionID);
                 output.newLine();
                 output.flush();
                 
