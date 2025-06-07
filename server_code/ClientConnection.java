@@ -11,17 +11,20 @@ public class ClientConnection {
     public static void main(String[] args){
         try {
             Socket socket = new Socket(address,port);
+            
+            //socket input and output streams
             BufferedReader incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-
-            while(incomingMSG.readLine() != null){
-                System.out.println(incomingMSG.readLine());
-            }
+            // //outputting what the server initially sends
+            // System.out.println(incomingMSG.readLine());
+            // System.out.println(incomingMSG.readLine());
+            
 
             socket.close();
 
         } catch (IOException e) {
+            System.out.println("Error on client connection: " + e.getStackTrace());
         }
 
 

@@ -25,3 +25,7 @@ Within the folder server code, the following files carry out the following tasks
 -develop checker system
 -develop server communication
 -develop the AI used in this game
+
+
+# used to help setup the mysql for this project
+https://www.geeksforgeeks.org/java-database-connectivity-with-mysql/
