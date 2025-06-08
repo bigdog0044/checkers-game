@@ -17,7 +17,7 @@ public class ClientConnection {
             BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             // //outputting what the server initially sends
-            // System.out.println(incomingMSG.readLine());
+            //System.out.println(incomingMSG.readLine());
             // System.out.println(incomingMSG.readLine());
             
 
