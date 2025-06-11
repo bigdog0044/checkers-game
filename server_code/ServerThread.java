@@ -25,9 +25,9 @@ public class ServerThread implements  Runnable{
                 BufferedWriter output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+                Class.forName("com.mysql.cj.jdbc.Driver");
                 
-                
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 System.out.println(e);
             } finally{
                 if(socket != null){

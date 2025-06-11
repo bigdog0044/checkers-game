@@ -27,9 +27,11 @@ Within the folder server code, the following files carry out the following tasks
 -develop the AI used in this game
 
 
-# used to help setup the mysql for this project
 
-- install the following if on windows 10
-- https://chocolatey.org/install#individual
-- then clone the following repo
-- https://github.com/marcobehlerjetbrains/maven-tutorial
+# to run this project use the following commands
+
+This is for the game portion
+mvn exec:java -Dexec.mainClass="game_code.mainGame"
+
+This is for server
+mvn exec:java -Dexec.mainClass="server_code.ServerMain" -Dexec.args=9000
