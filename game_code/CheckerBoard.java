@@ -1,3 +1,5 @@
+package game_code;
+
 class InvalidPiece extends Exception{
     public InvalidPiece(String value){
         super(value);

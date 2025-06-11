@@ -1,3 +1,5 @@
+package game_code;
+
 //defining a custom error for if the player does a move which isn't possible
 class IllegalMove extends Exception{
     public IllegalMove (String errMSG){

@@ -1,3 +1,5 @@
+package game_code;
+
 class CheckerPieces{
     private int[] location;
     private PlayerTeam team;

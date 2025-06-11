@@ -1,3 +1,5 @@
 *.class
 sqlServerLogin.java
+userInfo.json
 .vscode/
+maven-tutorial/

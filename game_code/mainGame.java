@@ -1,3 +1,5 @@
+package game_code;
+
 public class mainGame {
         public static void main(String[] args){
         CheckerGameLogic gameLogic = new CheckerGameLogic();

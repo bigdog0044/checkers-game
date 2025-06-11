@@ -28,4 +28,8 @@ Within the folder server code, the following files carry out the following tasks
 
 
 # used to help setup the mysql for this project
-https://www.geeksforgeeks.org/java-database-connectivity-with-mysql/
+
+- install the following if on windows 10
+- https://chocolatey.org/install#individual
+- then clone the following repo
+- https://github.com/marcobehlerjetbrains/maven-tutorial
