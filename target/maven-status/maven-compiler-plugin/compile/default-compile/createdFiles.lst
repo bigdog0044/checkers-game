@@ -4,6 +4,7 @@ server_code\ServerThread.class
 game_code\IllegalMove.class
 server_code\CreatingUsers.class
 game_code\InvalidPiece.class
+server_code\DBUsernameAndPass.class
 game_code\mainGame.class
 game_code\CheckerBoard.class
 server_code\InvalidPortNumber.class
