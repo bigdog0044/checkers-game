@@ -35,3 +35,17 @@ mvn exec:java -Dexec.mainClass="game_code.mainGame"
 
 This is for server
 mvn exec:java -Dexec.mainClass="server_code.ServerMain" -Dexec.args=9000
+
+For the client connection part
+mvn exec:java -Dexec.mainClass="server_code.ClientConnection"
+
+key for requests
+- USERRESPONSEREQ - used for sending messages to a user
+- USERRESPONSE - what user sends to server
+- CLOSE - used for closing connections between server and client
+- AUTHREQ - used to inform user that authentication is required
+- AUTHCHECK - send by user to check that username and password are correct
+- AUTHSUCCESS - successful login send by server
+- AUTHNOTSUCCESS - not successful. Note: reason is provided
+- ERROR - a error has happened and is reported back to the user
+- SECRETE - used to notify client to not display information
