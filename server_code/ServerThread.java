@@ -7,12 +7,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
 import java.net.Socket;
+import java.net.InetAddress;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class ServerThread implements  Runnable{
     private Socket socket; //socket that the client uses to connect
@@ -66,7 +69,10 @@ public class ServerThread implements  Runnable{
                                 output.write(userUUID);
                                 output.newLine();
                                 output.flush();
-                                String sqlStatement = "UPDATE userinfo SET `lastIpAdrrConn` = ?, `lastDateConn` = ?, `lastTimeOfConn` = ? WHERE username = ?;";
+
+                                //used to update last ip address, last time, and and date of connection columns in table
+                                updateUserRecord(username);
+
                             } else{
                                 output.write("AUTHNOTSUCCESS");
                                 output.newLine();
@@ -105,6 +111,36 @@ public class ServerThread implements  Runnable{
                 System.out.println("Error on server thread: " + e);                
             }
 
+        }
+
+        //add java docs for these methods
+
+
+        private void updateUserRecord(String username){
+            //getting date and time
+            LocalDate date = LocalDate.now();
+            LocalTime time = LocalTime.now();
+
+            InetAddress clientIP = socket.getLocalAddress();
+            String ip = clientIP.toString();
+            String clientDate = date.toString();
+            String clientTime = time.toString();
+
+            try{
+                String sqlStatement = "UPDATE userinfo SET `lastIpAdrrConn` = ?, `lastDateConn` = ?, `lastTimeOfConn` = ? WHERE username = ?;";
+                PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+
+                preparedSQL.setString(1,clientIP.toString());
+                preparedSQL.setString(2,clientDate);
+                preparedSQL.setString(3,clientTime);
+                preparedSQL.setString(4,username);
+
+
+                preparedSQL.executeUpdate();
+
+            } catch (SQLException e){
+                System.out.println("Error on updating user record: " + e);
+            }
         }
 
         private String validAuth(String username, String password){

@@ -67,10 +67,12 @@ public class ClientConnection {
                 }
             }
 
+            //sending request for user message
             output.write("USERWELCOMEMSG");
             output.newLine();
             output.flush();
-            System.out.println("Finished sending off request for USERWELCOMEMSG");
+
+            //reading user message
             while((line = incomingMSG.readLine()) != null){               
                 System.out.println(line);
             }
@@ -81,6 +83,8 @@ public class ClientConnection {
             System.out.println("Error on client connection: " + e);
         } finally{
             try{
+
+                //closing all the sockets and input/output stream
                 System.out.println(output);
                 System.out.println("closing everything on client side");
                 output.write("CLOSE");
