@@ -42,10 +42,13 @@ mvn exec:java -Dexec.mainClass="server_code.ClientConnection"
 key for requests
 - USERRESPONSEREQ - used for sending messages to a user
 - USERRESPONSE - what user sends to server
+- USERWELCOMEMSG - server sends welcome message to user
 - CLOSE - used for closing connections between server and client
 - AUTHREQ - used to inform user that authentication is required
 - AUTHCHECK - send by user to check that username and password are correct
 - AUTHSUCCESS - successful login send by server
 - AUTHNOTSUCCESS - not successful. Note: reason is provided
 - ERROR - a error has happened and is reported back to the user
-- SECRETE - used to notify client to not display information
+- SECRETE - used to notify client to not display 
+- GAMESESSION - used to notify client to go itno gaming mode
+- WELCOMEMSG - notifies client about incoming welcome message

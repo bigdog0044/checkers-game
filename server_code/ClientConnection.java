@@ -14,13 +14,18 @@ public class ClientConnection {
     private static final Scanner keyboardOBJ = new Scanner(System.in);
     private static String line;
     private static String clientUUID;
+    private static Socket socket;
+    private static BufferedReader incomingMSG;
+    private static BufferedWriter output;
     public static void main(String[] args){
         try {
+
             Socket socket = new Socket(address,port);
             
             //socket input and output streams
-            BufferedReader incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            
 
 
             line = incomingMSG.readLine();
@@ -52,49 +57,45 @@ public class ClientConnection {
 
                     line = incomingMSG.readLine();
 
-                    if(line.equals("AUTHSUCCESS")){
+                    if( "AUTHSUCCESS".equals(line)){
+                        clientUUID = incomingMSG.readLine();
                         validAuth = true;
-                        while ((line = incomingMSG.readLine())!= null){
-                            clientUUID = line;
-                            System.out.println("Successful login");
-                        }
-                    } else if(line.equals("AUTHNOTSUCCESS")){
+                    } else{
                         System.out.println("No valid username and password found");
                     }
                     
                 }
             }
-            System.out.println(clientUUID);
-            // while (line != null && !line.equals("CLOSE")){
-            //     System.out.println("test");
-            //     String username = "";
-            //     String password = "";
-            //     while (username.equals("") || password.equals("")){
-            //         System.out.print("Enter username: ");
-            //         username = keyboardOBJ.nextLine();
-            //         System.out.print("Enter password: ");
-            //         password = keyboardOBJ.nextLine();
-            //     }
-                
-            //     //sending authentication request to the server with username and password
-            //     output.write("AUTHREQ");
-            //     output.newLine();
-            //     output.write(username);
-            //     output.newLine();
-            //     output.write(password);
-            //     output.newLine();
-            //     output.flush();
-            // }
 
-            //closing connections
-            output.close();
-            incomingMSG.close();
-            socket.close();
+            output.write("USERWELCOMEMSG");
+            output.newLine();
+            output.flush();
+            System.out.println("Finished sending off request for USERWELCOMEMSG");
+            while((line = incomingMSG.readLine()) != null){               
+                System.out.println(line);
+            }
+
+            System.out.println("while loop has finished");
 
         } catch (IOException e) {
-            System.out.println("Error on client connection: " + e.getStackTrace());
-        }
+            System.out.println("Error on client connection: " + e);
+        } finally{
+            try{
+                System.out.println(output);
+                System.out.println("closing everything on client side");
+                output.write("CLOSE");
+                output.newLine();
+                output.flush();
 
+                try { if (incomingMSG != null) incomingMSG.close(); } catch (IOException ignored) {}
+                try{ output.close();} catch(IOException ignored){}
+                try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
+            } catch (IOException e){
+                System.out.println("Error on finally statement in client connection: " + e);
+            }
+
+            
+        }
 
     }
 }

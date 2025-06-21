@@ -3,12 +3,9 @@ game_code\CheckerGameLogic.class
 server_code\ServerThread.class
 game_code\IllegalMove.class
 game_code\InvalidPiece.class
-server_code\DBUsernameAndPass.class
-game_code\mainGame.class
 game_code\CheckerBoard.class
 server_code\InvalidPortNumber.class
 server_code\ServerMain.class
 game_code\PlayerTeam.class
-server_code\ClientConnection.class
 game_code\Direction.class
 game_code\Colour.class
