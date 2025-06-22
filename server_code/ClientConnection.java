@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -73,11 +74,36 @@ public class ClientConnection {
             output.flush();
 
             //reading user message
-            while((line = incomingMSG.readLine()) != null){               
-                System.out.println(line);
+
+            if((line = incomingMSG.readLine()).equals("WELCOMEMSG")){
+                while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){               
+                    System.out.println(line);
+                }
+            }
+            
+            Scanner keyboardOBJ = new Scanner(System.in);
+            int userResponse = 0;
+
+            while(userResponse != 4){
+                try{
+                    userResponse = keyboardOBJ.nextInt();
+
+                    switch(userResponse){
+                        case 4:
+                            System.out.println("Logging out. Please re-run program to re-authenticate");
+                            break;
+                    }
+                } catch (InputMismatchException e){
+                    System.out.println("Invalid number, please enter another number!");
+                    keyboardOBJ.nextLine();
+                }
             }
 
-            System.out.println("while loop has finished");
+            System.out.println("selection loop end");
+            
+
+            //closing scanner
+            keyboardOBJ.close();
 
         } catch (IOException e) {
             System.out.println("Error on client connection: " + e);
@@ -85,7 +111,6 @@ public class ClientConnection {
             try{
 
                 //closing all the sockets and input/output stream
-                System.out.println(output);
                 System.out.println("closing everything on client side");
                 output.write("CLOSE");
                 output.newLine();

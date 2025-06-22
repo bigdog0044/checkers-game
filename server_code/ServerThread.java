@@ -94,10 +94,25 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.write("[4] logout");
                             output.newLine();
+                            output.write("ENDOFMSG");
+                            output.newLine();
                             output.flush();
                             break;
                         case "CLOSE":
-                            System.out.println("Closing everything on server thread side");
+                            try{
+                                System.out.println("Closing everything on server thread side");
+
+                                String sqlStatement = "UPDATE userinfo SET `searchingForGame` = ?, `isInGame` = ?;";
+                                PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+
+                                preparedSQL.setBoolean(1,false);
+                                preparedSQL.setBoolean(2,false);
+
+                                preparedSQL.executeUpdate();
+                            } catch (SQLException e){
+                                System.out.println("Error on resetting search for game and is in game columns: " + e);
+                            }
+
                             try { if (incomingMSG != null) incomingMSG.close(); } catch (IOException ignored) {}
                             try { if (output != null) output.close(); } catch (IOException ignored) {}
                             try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
