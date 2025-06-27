@@ -51,4 +51,10 @@ key for requests
 - ERROR - a error has happened and is reported back to the user
 - SECRETE - used to notify client to not display 
 - GAMESESSION - used to notify client to go itno gaming mode
+- ENDOFMSG - used to nofify client that the message has ended
 - WELCOMEMSG - notifies client about incoming welcome message
+- CREATEUSERREQ - used to notify server client wants to create user
+- VALIDROLE - used to send to client, notifying they have a valid permissions
+- INVALIDROLE - used to inform client they don't have valid permissions
+- VALIDPROFILE - used to notify client of the fact the creation of the user is  valid
+- INVALIDPROFILE - used to notify client of the fact the creation of the user is not valid

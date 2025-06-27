@@ -1,5 +1,7 @@
 package server_code;
 
+
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class ServerThread implements  Runnable{
                 while(!"CLOSE".equals(line)){
                     //reads in another header request
                     line = incomingMSG.readLine();
-                    System.out.println(line);
+                    System.out.println("Incoming headers and request for server: " + line);
                     switch (line) {
     
                         case "AUTHCHECK":
@@ -118,8 +120,54 @@ public class ServerThread implements  Runnable{
                             try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
                             try { if (connection != null && !connection.isClosed()) connection.close(); } catch (SQLException ignored) {}
                             break;
+                        case "CREATEUSERREQ":
+                            line = incomingMSG.readLine();
+
+
+
+                            boolean result = validDateUserRole(line);
+                            CreatingUsers createUserOBJ = new CreatingUsers();
+                            if(result){
+                                output.write("VALIDROLE");
+                                output.newLine();
+                                output.flush();
+
+                                String userName = incomingMSG.readLine();
+                                String passWord = incomingMSG.readLine();
+                                String role = incomingMSG.readLine();
+
+                                try{
+                                    if(createUserOBJ.createUser(userName,passWord,role)){
+
+                                        output.write("VALIDPROFILE");
+                                        output.newLine();
+                                        output.flush();
+                                    }
+                                } catch (CreatingUsersError e){
+                                    //outputs the error message
+                                    output.write("ERROR");
+                                    output.newLine();
+                                    output.write("INVALIDPROFILE");
+                                    output.newLine();
+                                    output.write(e.getMessage());
+                                    output.newLine();
+                                    output.write("ENDOFMSG");
+                                    output.newLine();
+                                    output.flush();
+                                }
+
+                            } else{
+                                output.write("INVALIDROLE");
+                                output.newLine();
+                                output.write("Invalid permissions for this user");
+                                output.newLine();
+                                output.flush();
+                            }
+
+                            
+                            break;
                         default:
-                            System.out.println("Incoming header requests: " + line);                        
+                            System.out.println("Other incoming header requests: " + line);                        
                     }
                 }
             } catch (IOException e) {
@@ -179,6 +227,29 @@ public class ServerThread implements  Runnable{
         } catch (SQLException e){
             System.out.println("Valid auth error: " + e);
         }
+
         return null;
     }
+
+
+    private boolean validDateUserRole(String userUUID){
+        String sqlStatement = "SELECT * FROM `userinfo` WHERE ID = ? AND privilegeType='admin'; ";
+        try{
+            PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+            preparedSQL.setString(1,userUUID);
+            ResultSet resultSet = preparedSQL.executeQuery();
+            
+            if(resultSet.next()){
+                return true; //user has valid role
+            }
+
+        } catch (SQLException e){
+            System.out.println("Error on creating users validation: " + e);
+        }
+
+        return false; //user does not have valid role
+        
+    }
+
+
 }

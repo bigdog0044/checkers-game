@@ -8,6 +8,7 @@ import java.util.InputMismatchException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import server_code.CreatingUsers;
 
 public class ClientConnection {
     private static final String address = "127.0.0.1";
@@ -21,7 +22,7 @@ public class ClientConnection {
     public static void main(String[] args){
         try {
 
-            Socket socket = new Socket(address,port);
+            socket = new Socket(address,port);
             
             //socket input and output streams
             incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -69,34 +70,144 @@ public class ClientConnection {
             }
 
             //sending request for user message
-            output.write("USERWELCOMEMSG");
-            output.newLine();
-            output.flush();
-
-            //reading user message
-
-            if((line = incomingMSG.readLine()).equals("WELCOMEMSG")){
-                while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){               
-                    System.out.println(line);
-                }
-            }
+            welcomeMSG();
             
-            Scanner keyboardOBJ = new Scanner(System.in);
+            
             int userResponse = 0;
-
             while(userResponse != 4){
                 try{
+                    System.out.println("loop begins");
+                    System.out.println("incomg client requests: " + line);
                     userResponse = keyboardOBJ.nextInt();
-
+                    System.out.println(userResponse);
                     switch(userResponse){
+                        case 1:
+                            System.out.println("Start of case 1");
+                            //sending off request to create a new user profile with client UUID
+                            output.write("CREATEUSERREQ");
+                            output.newLine();
+                            output.write(clientUUID);
+                            output.newLine();
+                            output.flush();
+
+                            //reading response back from server
+                            line = incomingMSG.readLine();
+                            if(line.equals("VALIDROLE")){
+                                String username = "";
+                                String password = "";
+                                String role = "";
+
+                                System.out.println("Username current value: " + username);
+
+
+                                while(username.equals("")){
+                                    System.out.print("Eneter username: ");
+                                    username = keyboardOBJ.nextLine();
+
+                                    if(username.equals("")){
+                                        System.out.println("Please enter a valid username");
+                                    }
+                                }
+
+                                while(password.equals("")){
+                                    System.out.print("Eneter a password for " + username + ": ");
+                                    password = keyboardOBJ.nextLine();
+
+                                    if(password.equals("")){
+                                        System.out.println("Please enter a valid password");
+                                    }
+                                }
+
+                                while (role.equals("")){
+                                    System.out.println("Select which role you would like " + username + " to have");
+                                    System.out.println("[1] User");
+                                    System.out.println("[2] Admin");
+                                    System.out.println("[3] AI Bot");
+                                    try{
+
+                                        int choice = keyboardOBJ.nextInt();
+
+                                        switch(choice){
+                                            case 1:
+                                                role = "user";
+                                                break;
+                                            case 2:
+                                                role = "admin";
+                                                break;
+                                            case 3:
+                                                role = "aibot";
+                                                break;
+                                            default:
+                                                System.out.println("Please enter a valid number from the selection above");
+                                        }
+
+                                    } catch (InputMismatchException e){
+                                        System.out.println("Enter a number");
+                                    }
+                                }
+
+                                output.write(username);
+                                output.newLine();
+                                output.write(password);
+                                output.newLine();
+                                output.write(role);
+                                output.newLine();
+                                output.write("ENDOFMSG");
+                                output.newLine();
+                                output.flush();
+
+                                line = incomingMSG.readLine();
+
+                                if(line.equals("VALIDPROFILE")){
+                                    System.out.println("User " + username + " has been created with password: " + password + " and role: " + role);
+                                    //welcomeMSG();
+                                    break;
+                                } else if (line.equals("ERROR")){
+                                    line = incomingMSG.readLine();
+                                    if("INVALIDPROFILE".equals(line)){
+                                        while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){
+                                            //line = incomingMSG.readLine();
+                                            System.out.println(line);
+                                        }
+
+                                        break; //fixes an issue with looping and connection hanging
+
+                                    } else{
+                                        System.out.println("Another error has occured");
+                                        while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){
+                                            System.out.println(line);
+                                        }
+
+                                        break; //fixes an issue with looping and connection hanging
+                                    }
+                                }
+
+                                
+                            }
+
+                            if (line.equals("INVALIDROLE")){
+                                line = incomingMSG.readLine();
+                                System.out.println(line);
+                            }
+                            
+                            keyboardOBJ.next();
+                            break;
                         case 4:
                             System.out.println("Logging out. Please re-run program to re-authenticate");
                             break;
+                        default:
+                            System.out.println(userResponse);
                     }
+
+                    System.out.println("welcome msg method runs");
+                    welcomeMSG();
+                    keyboardOBJ.nextLine();
                 } catch (InputMismatchException e){
                     System.out.println("Invalid number, please enter another number!");
                     keyboardOBJ.nextLine();
                 }
+                
+                
             }
 
             System.out.println("selection loop end");
@@ -127,4 +238,25 @@ public class ClientConnection {
         }
 
     }
+
+    private static void welcomeMSG(){
+        try{
+            output.write("USERWELCOMEMSG");
+            output.newLine();
+            output.flush();
+
+            line = incomingMSG.readLine();
+            if(line.equals("WELCOMEMSG")){
+                while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){               
+                    System.out.println(line);
+                }
+            } else {
+                System.out.println("Something went horribly wrong: " + line);
+            }
+        } catch (IOException e){
+            System.out.println("Welcome message method error: " + e);
+        }
+        
+    }
+
 }
