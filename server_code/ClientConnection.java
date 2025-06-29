@@ -57,6 +57,7 @@ public class ClientConnection {
                     output.newLine();
                     output.flush();
 
+                    //reads in the response back from the server
                     line = incomingMSG.readLine();
 
                     if( "AUTHSUCCESS".equals(line)){
@@ -76,8 +77,6 @@ public class ClientConnection {
             int userResponse = 0;
             while(userResponse != 4){
                 try{
-                    System.out.println("loop begins");
-                    System.out.println("incomg client requests: " + line);
                     userResponse = keyboardOBJ.nextInt();
                     System.out.println(userResponse);
                     switch(userResponse){
@@ -146,6 +145,7 @@ public class ClientConnection {
                                     }
                                 }
 
+                                //sending off username,password,and role to the server to be verified and created
                                 output.write(username);
                                 output.newLine();
                                 output.write(password);
@@ -156,12 +156,12 @@ public class ClientConnection {
                                 output.newLine();
                                 output.flush();
 
+                                //reading response back from the server
                                 line = incomingMSG.readLine();
 
                                 if(line.equals("VALIDPROFILE")){
                                     System.out.println("User " + username + " has been created with password: " + password + " and role: " + role);
-                                    //welcomeMSG();
-                                    break;
+                                    break; //fixes an issue with looping and connection hanging
                                 } else if (line.equals("ERROR")){
                                     line = incomingMSG.readLine();
                                     if("INVALIDPROFILE".equals(line)){

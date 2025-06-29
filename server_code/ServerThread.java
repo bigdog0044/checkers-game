@@ -92,10 +92,11 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.write("[2] find game sessions");
                             output.newLine();
-                            output.write("[3] create a new session");
+                            output.write("[3] create a new session d");
                             output.newLine();
                             output.write("[4] logout");
                             output.newLine();
+                            output.write("[5] view your current game saves");
                             output.write("ENDOFMSG");
                             output.newLine();
                             output.flush();
