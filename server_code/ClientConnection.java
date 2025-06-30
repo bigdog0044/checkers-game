@@ -13,7 +13,7 @@ import server_code.CreatingUsers;
 public class ClientConnection {
     private static final String address = "127.0.0.1";
     private static final int port = 9000;
-    private static final Scanner keyboardOBJ = new Scanner(System.in);
+    private static Scanner keyboardOBJ;
     private static String line;
     private static String clientUUID;
     private static Socket socket;
@@ -21,6 +21,8 @@ public class ClientConnection {
     private static BufferedWriter output;
     public static void main(String[] args){
         try {
+
+            keyboardOBJ = new Scanner(System.in);
 
             socket = new Socket(address,port);
             
@@ -72,7 +74,6 @@ public class ClientConnection {
 
             //sending request for user message
             welcomeMSG();
-            
             
             int userResponse = 0;
             while(userResponse != 4){
@@ -191,6 +192,25 @@ public class ClientConnection {
                             }
                             
                             keyboardOBJ.next();
+                            break;
+
+                        case 3:
+                            //sending off request to server to initiate session creation
+                            output.write("CREATINGSESSION");
+                            output.newLine();
+                            output.flush();
+
+                            //reading response back from server
+                            line = incomingMSG.readLine();
+
+                            if(line.equals("RESPONSEREC")){
+                                while(!line.equals("ENDOFMSG")){
+                                    line = incomingMSG.readLine();
+                                    System.out.println(line);
+                                }
+                            }
+
+
                             break;
                         case 4:
                             System.out.println("Logging out. Please re-run program to re-authenticate");

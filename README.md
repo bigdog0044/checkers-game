@@ -49,6 +49,7 @@ key for requests
 - AUTHSUCCESS - successful login send by server
 - AUTHNOTSUCCESS - not successful. Note: reason is provided
 - ERROR - a error has happened and is reported back to the user
+- RESPONSEREC - notifies client that the request has been recieved which is then followed by a message
 - SECRETE - used to notify client to not display 
 - GAMESESSION - used to notify client to go itno gaming mode
 - ENDOFMSG - used to nofify client that the message has ended

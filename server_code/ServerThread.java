@@ -92,11 +92,12 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.write("[2] find game sessions");
                             output.newLine();
-                            output.write("[3] create a new session d");
+                            output.write("[3] create a new session");
                             output.newLine();
                             output.write("[4] logout");
                             output.newLine();
                             output.write("[5] view your current game saves");
+                            output.newLine();
                             output.write("ENDOFMSG");
                             output.newLine();
                             output.flush();
@@ -167,6 +168,20 @@ public class ServerThread implements  Runnable{
 
                             
                             break;
+                        case "CREATINGSESSION":
+                            output.write("RESPONSEREC");
+                            output.newLine();
+                            output.write("Creating session");
+                            output.newLine();
+                            output.write("ENDOFMSG");
+                            output.newLine();
+                            output.flush();
+
+
+                            break;
+
+
+
                         default:
                             System.out.println("Other incoming header requests: " + line);                        
                     }

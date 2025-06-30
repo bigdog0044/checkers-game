@@ -7,6 +7,7 @@ game_code\InvalidPiece.class
 server_code\DBUsernameAndPass.class
 game_code\mainGame.class
 game_code\CheckerBoard.class
+server_package\SettingUpGame.class
 server_code\InvalidPortNumber.class
 server_code\ServerMain.class
 server_code\CreatingUsersError.class
