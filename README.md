@@ -50,7 +50,7 @@ key for requests
 - AUTHNOTSUCCESS - not successful. Note: reason is provided
 - ERROR - a error has happened and is reported back to the user
 - RESPONSEREC - notifies client that the request has been recieved which is then followed by a message
-- SECRETE - used to notify client to not display 
+- SECRETE - used to notify client to not display
 - GAMESESSION - used to notify client to go itno gaming mode
 - ENDOFMSG - used to nofify client that the message has ended
 - WELCOMEMSG - notifies client about incoming welcome message
@@ -59,3 +59,5 @@ key for requests
 - INVALIDROLE - used to inform client they don't have valid permissions
 - VALIDPROFILE - used to notify client of the fact the creation of the user is  valid
 - INVALIDPROFILE - used to notify client of the fact the creation of the user is not valid
+- SESSIONCREATING - used to nofify client that the session is currently being created
+- ENDSESSCREATE - used to notify client that the session creation is over

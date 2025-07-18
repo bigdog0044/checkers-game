@@ -13,7 +13,7 @@ import server_code.CreatingUsers;
 public class ClientConnection {
     private static final String address = "127.0.0.1";
     private static final int port = 9000;
-    private static Scanner keyboardOBJ;
+    private static final Scanner keyboardOBJ = new Scanner(System.in);
     private static String line;
     private static String clientUUID;
     private static Socket socket;
@@ -22,14 +22,13 @@ public class ClientConnection {
     public static void main(String[] args){
         try {
 
-            keyboardOBJ = new Scanner(System.in);
 
             socket = new Socket(address,port);
-            
+
             //socket input and output streams
             incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            
+
 
 
             line = incomingMSG.readLine();
@@ -37,7 +36,7 @@ public class ClientConnection {
 
             //loging portion
             if (line.equals("AUTHREQ")){
-                
+
                 while(!(validAuth)){
                     String username = "";
                     String password = "";
@@ -68,13 +67,13 @@ public class ClientConnection {
                     } else{
                         System.out.println("No valid username and password found");
                     }
-                    
+
                 }
             }
 
             //sending request for user message
             welcomeMSG();
-            
+
             int userResponse = 0;
             while(userResponse != 4){
                 try{
@@ -183,14 +182,14 @@ public class ClientConnection {
                                     }
                                 }
 
-                                
+
                             }
 
                             if (line.equals("INVALIDROLE")){
                                 line = incomingMSG.readLine();
                                 System.out.println(line);
                             }
-                            
+
                             keyboardOBJ.next();
                             break;
 
@@ -208,6 +207,20 @@ public class ClientConnection {
                                     line = incomingMSG.readLine();
                                     System.out.println(line);
                                 }
+                            } else {
+                                System.out.println("Another header came through instead: " + line);
+                            }
+
+                            line = incomingMSG.readLine();
+                            if(line.equals("SESSIONCREATING")){
+                              while(!line.equals("ENDSESSCREATE")){
+
+                                if(!line.equals("ENDOFMSG") || !line.equals("ENDSESSCREATE")){
+                                    System.out.println("Client outputs: " + line);
+                                }
+                                line = incomingMSG.readLine();
+                                
+                              }
                             }
 
 
@@ -219,19 +232,18 @@ public class ClientConnection {
                             System.out.println(userResponse);
                     }
 
-                    System.out.println("welcome msg method runs");
                     welcomeMSG();
                     keyboardOBJ.nextLine();
                 } catch (InputMismatchException e){
                     System.out.println("Invalid number, please enter another number!");
                     keyboardOBJ.nextLine();
                 }
-                
-                
+
+
             }
 
             System.out.println("selection loop end");
-            
+
 
             //closing scanner
             keyboardOBJ.close();
@@ -254,7 +266,7 @@ public class ClientConnection {
                 System.out.println("Error on finally statement in client connection: " + e);
             }
 
-            
+
         }
 
     }
@@ -267,7 +279,7 @@ public class ClientConnection {
 
             line = incomingMSG.readLine();
             if(line.equals("WELCOMEMSG")){
-                while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){               
+                while(!"ENDOFMSG".equals((line = incomingMSG.readLine()))){
                     System.out.println(line);
                 }
             } else {
@@ -276,7 +288,7 @@ public class ClientConnection {
         } catch (IOException e){
             System.out.println("Welcome message method error: " + e);
         }
-        
+
     }
 
 }

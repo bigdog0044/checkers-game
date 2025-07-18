@@ -27,6 +27,7 @@ public class ServerThread implements  Runnable{
     private BufferedReader incomingMSG;
     private BufferedWriter output;
     private boolean authenticated = false;
+    private String userUUID;
 
     public ServerThread(Socket socket, ServerMain main){
         this.socket = socket;
@@ -41,15 +42,15 @@ public class ServerThread implements  Runnable{
             System.out.println("ServerThread class initialisation method error: " + e);
         }
     }
-    
-    
+
+
     @Override
     public void run(){
             try {
                 output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
                 incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String connectionID = serverMain.getConnectionID();
-                
+
                 output.write("AUTHREQ");
                 output.newLine();
                 output.flush();
@@ -59,12 +60,12 @@ public class ServerThread implements  Runnable{
                     line = incomingMSG.readLine();
                     System.out.println("Incoming headers and request for server: " + line);
                     switch (line) {
-    
+
                         case "AUTHCHECK":
                             String username = incomingMSG.readLine();
                             String password = incomingMSG.readLine();
-                                
-                            String userUUID = validAuth(username, password);
+
+                            userUUID = validAuth(username, password);
                             if (userUUID != null){
                                 output.write("AUTHSUCCESS");
                                 output.newLine();
@@ -166,7 +167,7 @@ public class ServerThread implements  Runnable{
                                 output.flush();
                             }
 
-                            
+
                             break;
                         case "CREATINGSESSION":
                             output.write("RESPONSEREC");
@@ -177,17 +178,16 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.flush();
 
-
+                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket);
                             break;
 
 
-
                         default:
-                            System.out.println("Other incoming header requests: " + line);                        
+                            System.out.println("Other incoming header requests: " + line);
                     }
                 }
             } catch (IOException e) {
-                System.out.println("Error on server thread: " + e);                
+                System.out.println("Error on server thread: " + e);
             }
 
         }
@@ -224,14 +224,14 @@ public class ServerThread implements  Runnable{
 
         private String validAuth(String username, String password){
         try{
-                
+
             String sqlStatement = "select * from userinfo where username = ? and password = ?;";
             //this is used below as not only is it the better as it has massive security improvement and also enables portability
             PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
             preparedSQL.setString(1,username);
             preparedSQL.setString(2,password);
 
-                
+
             ResultSet resultSet = preparedSQL.executeQuery();
 
             while(resultSet.next()){
@@ -254,7 +254,7 @@ public class ServerThread implements  Runnable{
             PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
             preparedSQL.setString(1,userUUID);
             ResultSet resultSet = preparedSQL.executeQuery();
-            
+
             if(resultSet.next()){
                 return true; //user has valid role
             }
@@ -264,7 +264,7 @@ public class ServerThread implements  Runnable{
         }
 
         return false; //user does not have valid role
-        
+
     }
 
 
