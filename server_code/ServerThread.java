@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import game_code.CheckerBoard;
 
 public class ServerThread implements  Runnable{
     private Socket socket; //socket that the client uses to connect
@@ -178,7 +179,12 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.flush();
 
-                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket);
+                            
+                            //creating new checker board for player
+                            CheckerBoard board = new CheckerBoard(8,8);
+
+                            //used to setup a new session for the user
+                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board);
                             break;
 
 

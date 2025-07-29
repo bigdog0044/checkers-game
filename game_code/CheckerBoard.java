@@ -33,7 +33,7 @@ enum PlayerTeam{
         return this.team;
     }
 }
-class CheckerBoard {
+public class CheckerBoard {
     private int[][] board;
     private CheckerPieces[] player1Pieces; 
     private CheckerPieces[] player2Pieces; 

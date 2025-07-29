@@ -214,11 +214,11 @@ public class ClientConnection {
                             line = incomingMSG.readLine();
                             if(line.equals("SESSIONCREATING")){
                               while(!line.equals("ENDSESSCREATE")){
-
-                                if(!line.equals("ENDOFMSG") || !line.equals("ENDSESSCREATE")){
-                                    System.out.println("Client outputs: " + line);
-                                }
                                 line = incomingMSG.readLine();
+                                if(!line.equals("ENDOFMSG") || !line.equals("ENDSESSCREATE")){
+                                    System.out.println(line);
+                                }
+                                
                                 
                               }
                             }
