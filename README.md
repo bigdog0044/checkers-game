@@ -34,10 +34,10 @@ This is for the game portion
 mvn exec:java -Dexec.mainClass="game_code.mainGame"
 
 This is for server
-mvn exec:java -Dexec.mainClass="server_code.ServerMain" -Dexec.args=9000
+mvn compile && mvn exec:java -Dexec.mainClass="server_code.ServerMain" -Dexec.args=9000
 
 For the client connection part
-mvn exec:java -Dexec.mainClass="server_code.ClientConnection"
+mvn compile && mvn exec:java -Dexec.mainClass="server_code.ClientConnection"
 
 key for requests
 - USERRESPONSEREQ - used for sending messages to a user
@@ -60,4 +60,7 @@ key for requests
 - VALIDPROFILE - used to notify client of the fact the creation of the user is  valid
 - INVALIDPROFILE - used to notify client of the fact the creation of the user is not valid
 - SESSIONCREATING - used to nofify client that the session is currently being created
+- VALIDRESPONSE - used to notify client that the respond was accepted and valid by server
+- INVALIDRESPONSE - used to notify client that the response was rejected by server
 - ENDSESSCREATE - used to notify client that the session creation is over
+- BOTREC - used by server to ask client if they want a bot in their game

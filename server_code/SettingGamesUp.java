@@ -19,7 +19,7 @@ public class SettingGamesUp {
 	private static BufferedWriter output;
 	private String userUUID;
 
-	public SettingGamesUp(String userUUID, Socket socket, String userID, CheckerBoard checkerBoardOBJ){
+	public SettingGamesUp(String userUUID, Socket socket, String userID, CheckerBoard checkerBoardOBJ, boolean botRequest){
 		try{
 			output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
 			this.userUUID = userID;
@@ -48,7 +48,7 @@ public class SettingGamesUp {
 			 	output.newLine();
 			 	output.flush();
 
-			 	if (gameFileCreation(sessionFolderLocation, userUUID, checkerBoardOBJ)){
+			 	if (gameFileCreation(sessionFolderLocation, userUUID, checkerBoardOBJ, botRequest)){
 			 		//add stuff in  
 			 	}
 			} else {
@@ -100,18 +100,23 @@ public class SettingGamesUp {
 	* used to create and write into files all data required to get the game running
 	*@return true if successful
 	*/
-	private boolean gameFileCreation(String targetFolder,String userID, CheckerBoard board){
+	private boolean gameFileCreation(String targetFolder,String userID, CheckerBoard board, boolean botRequest){
 		try{
 			//outputs to server for logs reason
 			System.out.println("Creating folder on following path: " + targetFolder);
+			System.out.println("Creating file on following path: " + targetFolder);
 
 			//creating file objects
 			File metaDataOBJ = new File(targetFolder,"metadata.txt");
 			File gameSaveOBJ = new File(targetFolder,"gameSave.txt");
+
+			
 			boolean successCreaton = false;
 
 			if (metaDataOBJ.createNewFile() && gameSaveOBJ.createNewFile()){
-			
+				//outputs to server for logs reason
+				System.out.println("Creating meta file on following path: " + metaDataOBJ.getPath());
+				System.out.println("Creating meta file on following path: " + gameSaveOBJ.getPath());
 				try(
 					FileWriter metaDataWriterOBJ = new FileWriter(metaDataOBJ.getPath());
 					FileWriter gameSaveWriterOBJ = new FileWriter(gameSaveOBJ.getPath());
@@ -127,6 +132,8 @@ public class SettingGamesUp {
 					metaDataWriterOBJ.write("Number-columns: " + board.returnColLen());
 					metaDataWriterOBJ.write("\n");
 					metaDataWriterOBJ.write("Max-players: 2");
+					metaDataWriterOBJ.write("\n");
+					metaDataWriterOBJ.write("Requires bot: " + botRequest);
 
 
 					//this handles writing the board peices to the file itself

@@ -179,12 +179,72 @@ public class ServerThread implements  Runnable{
                             output.newLine();
                             output.flush();
 
+                            boolean successfulResponse = false;
+                            boolean requiresBot = false;
+
+                            output.write("BOTREC");
+                            output.newLine();
+                            output.flush();
+                            while (!successfulResponse){
+
+                                //used to ask user about if they want a bot in their game
+                                output.write("USERRESPONSEREQ");
+                                output.newLine();
+                                output.write("Do you want a bot in your game? (Yes/No)");
+                                output.newLine();
+                                output.write("ENDOFMSG");
+                                output.newLine();
+                                output.flush();
+
+
+                                line = incomingMSG.readLine();
+
+                                if (line.equals("USERRESPONSE")){
+                                    line = incomingMSG.readLine();
+                                    if(line.equals("Yes") || line.equals("yes")){
+                                        output.write("VALIDRESPONSE");
+                                        output.newLine();
+                                        output.write("Adding bot to your session");
+                                        output.newLine();
+                                        output.write("ENDOFMSG");
+                                        output.newLine();
+                                        output.flush();
+
+                                        requiresBot = true;
+                                        successfulResponse = true;
+
+                                    } else if(line.equals("No") || line.equals("no")){
+                                        output.write("VALIDRESPONSE");
+                                        output.newLine();
+                                        output.write("Not adding bot to your session");
+                                        output.newLine();
+                                        output.write("Looking for other players to join");
+                                        output.newLine();
+                                        output.write("ENDOFMSG");
+                                        output.newLine();
+                                        output.flush();
+
+                                        successfulResponse = true;
+
+                                    } else{
+                                        output.write("INVALIDRESPONSE");
+                                        output.newLine();
+                                        output.write("Invalid response");
+                                        output.newLine();
+                                        output.write("ENDOFMSG");
+                                        output.newLine();
+                                        output.flush();
+                                    }
+                                }
+                                
+                            }
+
                             
                             //creating new checker board for player
                             CheckerBoard board = new CheckerBoard(8,8);
 
                             //used to setup a new session for the user
-                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board);
+                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
                             break;
 
 

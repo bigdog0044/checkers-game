@@ -204,21 +204,73 @@ public class ClientConnection {
 
                             if(line.equals("RESPONSEREC")){
                                 while(!line.equals("ENDOFMSG")){
-                                    line = incomingMSG.readLine();
                                     System.out.println(line);
+                                    line = incomingMSG.readLine();
                                 }
                             } else {
                                 System.out.println("Another header came through instead: " + line);
                             }
 
+
+
+                            //this handles bot request for users game
+                            line = incomingMSG.readLine();
+                            if(line.equals("BOTREC")){
+                                Scanner keyboardInputOBJ = new Scanner(System.in);
+                                
+                                String response = "";
+                                line = incomingMSG.readLine();
+
+                                while(!line.equals("VALIDRESPONSE")){
+                                    //reads output from the server
+                                    if(line.equals("USERRESPONSEREQ")){
+                                        while(!line.equals("ENDOFMSG")){
+                                            System.out.println(line);
+                                            line = incomingMSG.readLine();
+                                        }
+                                        //allowing user to respond
+                                        response = keyboardInputOBJ.nextLine();
+                                        output.write("USERRESPONSE");
+                                        output.newLine();
+                                        output.write(response);
+                                        output.newLine();
+                                        output.flush();
+                                    }
+
+                                    //reading response back from server
+                                    line = incomingMSG.readLine();
+                                    if(line.equals("INVALIDRESPONSE")){
+                                        while(!line.equals("ENDOFMSG")){
+                                            line = incomingMSG.readLine();
+                                            System.out.println(line);
+                                            
+                                        }
+                                    }
+
+
+                                    
+                                }
+
+
+                                //reading the valid header response back from the server
+                                if(line.equals("VALIDRESPONSE")){
+                                    while(!line.equals("ENDOFMSG")){
+                                        System.out.println(line);
+                                        line = incomingMSG.readLine();
+                                    }
+                                }
+                            }
+
+
+                            //this handles session creation
                             line = incomingMSG.readLine();
                             if(line.equals("SESSIONCREATING")){
                               while(!line.equals("ENDSESSCREATE")){
-                                line = incomingMSG.readLine();
+
                                 if(!line.equals("ENDOFMSG") || !line.equals("ENDSESSCREATE")){
                                     System.out.println(line);
                                 }
-                                
+                                line = incomingMSG.readLine();
                                 
                               }
                             }
@@ -283,7 +335,7 @@ public class ClientConnection {
                     System.out.println(line);
                 }
             } else {
-                System.out.println("Something went horribly wrong: " + line);
+                System.out.println("Something went horribly wrong on welcomeMSG: " + line);
             }
         } catch (IOException e){
             System.out.println("Welcome message method error: " + e);
