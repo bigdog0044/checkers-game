@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import game_code.CheckerBoard;
+import game_code.GameHandler;
 
 public class ServerThread implements  Runnable{
     private Socket socket; //socket that the client uses to connect
@@ -239,12 +240,18 @@ public class ServerThread implements  Runnable{
                                 
                             }
 
-                            
+                            /*this part of the code is used to start the actual game part of this project */
+
+                            //add in here to update database with current folder UUID!
+
                             //creating new checker board for player
                             CheckerBoard board = new CheckerBoard(8,8);
 
                             //used to setup a new session for the user
                             SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
+
+                            GameHandler gameHandlerOBJ = new GameHandler(board,setupOBJ.getSessionFolderLocation(),socket);
+                            
                             break;
 
 

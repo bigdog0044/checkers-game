@@ -275,6 +275,9 @@ public class ClientConnection {
                               }
                             }
 
+                            //this part of the code reads the response from the server letting the client know that the game has started
+
+                            
 
                             break;
                         case 4:
@@ -283,6 +286,9 @@ public class ClientConnection {
                         default:
                             System.out.println(userResponse);
                     }
+
+
+
 
                     welcomeMSG();
                     keyboardOBJ.nextLine();

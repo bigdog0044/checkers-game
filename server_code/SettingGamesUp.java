@@ -70,6 +70,11 @@ public class SettingGamesUp {
 	}
 
 
+	//returning current session folder location
+	public String getSessionFolderLocation(){
+		return sessionFolderLocation;
+	}
+
 	//used to send custom creation messages
 	private void SendingCreationMSG(String startingMSG,String message){
 		try{
