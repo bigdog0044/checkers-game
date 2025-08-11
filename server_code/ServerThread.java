@@ -106,14 +106,17 @@ public class ServerThread implements  Runnable{
                             output.flush();
                             break;
                         case "CLOSE":
+                        //this handles closing all connections and resetting everything on client side
                             try{
                                 System.out.println("Closing everything on server thread side");
 
-                                String sqlStatement = "UPDATE userinfo SET `searchingForGame` = ?, `isInGame` = ?;";
+                                String sqlStatement = "UPDATE userinfo SET `searchingForGame` = ?, `isInGame` = ?, `waitingForPlayer` = ? WHERE `id` = ?;";
                                 PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
 
                                 preparedSQL.setBoolean(1,false);
                                 preparedSQL.setBoolean(2,false);
+                                preparedSQL.setBoolean(3,false);
+                                preparedSQL.setString(5, userUUID);
 
                                 preparedSQL.executeUpdate();
                             } catch (SQLException e){
@@ -241,21 +244,17 @@ public class ServerThread implements  Runnable{
                             }
 
                             /*this part of the code is used to start the actual game part of this project */
-
-                            
-
-                            //creating new checker board for player
+                            //creating new checker board for player 
                             CheckerBoard board = new CheckerBoard(8,8);
 
                             //used to setup a new session for the user
                             SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
 
                             //used to update user record for gameSessionID column
-                            System.out.println(setupOBJ.getCurrentFolderUUID());
-                            
-                            //updateGameSessionID(setupOBJ.getCurrentFolderUUID());
+                            updateGameSessionID(setupOBJ.getCurrentFolderUUID());
                             //used to update user record for waiting for a player to join
-
+                            updateWaitingForPlayer();
+                            playerInGame();
 
                             GameHandler gameHandlerOBJ = new GameHandler(board,setupOBJ.getSessionFolderLocation(),socket);
                             
@@ -307,8 +306,6 @@ public class ServerThread implements  Runnable{
          */
 
         private void updateGameSessionID(String folderUUID){
-
-            System.out.println("User UUID: " + userUUID);
             try{
                 String sqlStatement = "UPDATE userinfo SET `gameSessionID` = ? WHERE `ID`= ?; ";
                 PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
@@ -329,11 +326,31 @@ public class ServerThread implements  Runnable{
                 String sqlStatement = "UPDATE userinfo SET `waitingForPlayer` = ? WHERE `ID`= ?; ";
                 PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
                 preparedSQL.setBoolean(1, true);
+                preparedSQL.setString(2, userUUID);
                 preparedSQL.executeUpdate();
             } catch (SQLException error){
                 System.out.println("Error on updateWaitingForPlayer: " + error);
             }
         }
+
+
+        /*
+         * used to update isInGame column
+         */
+
+         private void playerInGame(){
+             try{
+                 String sqlStatement = "UPDATE userinfo SET `isInGame` = ? WHERE `ID` = ?; ";
+                 PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+                 preparedSQL.setBoolean(1, true);
+                 preparedSQL.setString(2, userUUID);
+                 preparedSQL.executeUpdate();
+            } catch (SQLException error){
+                System.out.println("Error on updating playerInGame method: " + error);
+            }
+                
+
+         }
         
 
         private String validAuth(String username, String password){
