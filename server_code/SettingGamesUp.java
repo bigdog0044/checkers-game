@@ -41,7 +41,9 @@ public class SettingGamesUp {
 			 //generates a new UUID for a session folder
 			 UUID gameFolderUUID = UUID.randomUUID();
 
-			 sessionFolderLocation = gameCreation(gameFolderUUID.toString(), userUUID);
+			 sessionFolderUUID = gameFolderUUID.toString();
+
+			 sessionFolderLocation = gameCreation(sessionFolderUUID, userUUID);
 			 //letting user know that user session has been created
 			 if(sessionFolderLocation != null){
 			 	output.write("New game session has been created with the following ID: " + gameFolderUUID.toString());

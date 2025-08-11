@@ -251,7 +251,9 @@ public class ServerThread implements  Runnable{
                             SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
 
                             //used to update user record for gameSessionID column
-                            updateGameSessionID(setupOBJ.getCurrentFolderUUID());
+                            System.out.println(setupOBJ.getCurrentFolderUUID());
+                            
+                            //updateGameSessionID(setupOBJ.getCurrentFolderUUID());
                             //used to update user record for waiting for a player to join
 
 
