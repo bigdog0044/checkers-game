@@ -57,7 +57,8 @@ public class CreatingUsers{
         		preparedSQL.setNull(7,java.sql.Types.TIME);
         		preparedSQL.setBoolean(8,false);
         		preparedSQL.setBoolean(9,false);
-        		preparedSQL.setString(10,role);
+				preparedSQL.setBoolean(10, false);
+        		preparedSQL.setString(11,role);
 
         		preparedSQL.executeUpdate();
 

@@ -242,13 +242,18 @@ public class ServerThread implements  Runnable{
 
                             /*this part of the code is used to start the actual game part of this project */
 
-                            //add in here to update database with current folder UUID!
+                            
 
                             //creating new checker board for player
                             CheckerBoard board = new CheckerBoard(8,8);
 
                             //used to setup a new session for the user
                             SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
+
+                            //used to update user record for gameSessionID column
+                            updateGameSessionID(setupOBJ.getCurrentFolderUUID());
+                            //used to update user record for waiting for a player to join
+
 
                             GameHandler gameHandlerOBJ = new GameHandler(board,setupOBJ.getSessionFolderLocation(),socket);
                             
@@ -294,6 +299,40 @@ public class ServerThread implements  Runnable{
                 System.out.println("Error on updating user record: " + e);
             }
         }
+
+        /*
+         * this method is used to update the user record with the current game session ID
+         */
+
+        private void updateGameSessionID(String folderUUID){
+
+            System.out.println("User UUID: " + userUUID);
+            try{
+                String sqlStatement = "UPDATE userinfo SET `gameSessionID` = ? WHERE `ID`= ?; ";
+                PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+                preparedSQL.setString(1, folderUUID);
+                preparedSQL.setString(2, userUUID);
+                preparedSQL.executeUpdate();
+            } catch (SQLException error){
+                System.out.println("Error on updateGameSessionID method: " + error);
+            }
+        }
+
+        /*
+         * this method is used to update the user record for if the player is waiting for another player to join
+         */
+
+        private void updateWaitingForPlayer(){
+            try{
+                String sqlStatement = "UPDATE userinfo SET `waitingForPlayer` = ? WHERE `ID`= ?; ";
+                PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+                preparedSQL.setBoolean(1, true);
+                preparedSQL.executeUpdate();
+            } catch (SQLException error){
+                System.out.println("Error on updateWaitingForPlayer: " + error);
+            }
+        }
+        
 
         private String validAuth(String username, String password){
         try{
