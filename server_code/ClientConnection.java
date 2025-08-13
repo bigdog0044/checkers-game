@@ -277,7 +277,21 @@ public class ClientConnection {
 
                             //this part of the code reads the response from the server letting the client know that the game has started
 
-                            
+                            line = incomingMSG.readLine();
+                            if(line.equals("STARTGAME")){
+                                while(!line.equals("ENDGAME")){
+                                    line = incomingMSG.readLine();
+                                    if(line.equals("STARTBOARD")){
+                                        while(!line.equals("ENDBOARD")){
+                                            System.out.println(line);
+                                            line = incomingMSG.readLine();
+                                        }
+                                    }
+                                }
+                            }
+
+                            //reading response on rendering board from server
+                            line = incomingMSG.readLine();
 
                             break;
                         case 4:
@@ -286,8 +300,6 @@ public class ClientConnection {
                         default:
                             System.out.println(userResponse);
                     }
-
-
 
 
                     welcomeMSG();

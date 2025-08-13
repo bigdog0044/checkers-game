@@ -130,7 +130,38 @@ public class CheckerBoard {
             }
             rowNum -= 1;
         }
-    } 
+    }
+    
+
+    /*
+     * this renderes the board as a string array so it can be sent back to the user
+     * @return rendered board
+     */
+    public String[][] renderBoardAsStringArray(){
+        String[][] renderedBoard = new String[this.board.length][this.board[0].length];
+ 
+        for(int rowPos = 0; rowPos < this.board.length; rowPos++){
+            for(int colPos = 0; colPos < this.board[0].length; colPos++){
+                switch (this.board[rowPos][colPos]) {
+                    case 0:
+                        renderedBoard[rowPos][colPos] = Colour.BLACK.name();
+                        break;
+                    case 1:
+                        renderedBoard[rowPos][colPos] = Colour.WHITE.name();
+                        break;
+                    case 2:
+                        renderedBoard[rowPos][colPos] = PlayerTeam.PLAYER1.name();
+                        break;
+
+                    case 3:
+                        renderedBoard[rowPos][colPos] = PlayerTeam.PLAYER2.name();
+                        break;
+                }
+            }
+        }
+        return renderedBoard;
+    }
+    
 
     private int[][] SetUpBoard(int[][] board){
         for(int x = 0; x < board.length; x++){

@@ -116,7 +116,7 @@ public class ServerThread implements  Runnable{
                                 preparedSQL.setBoolean(1,false);
                                 preparedSQL.setBoolean(2,false);
                                 preparedSQL.setBoolean(3,false);
-                                preparedSQL.setString(5, userUUID);
+                                preparedSQL.setString(4, userUUID);
 
                                 preparedSQL.executeUpdate();
                             } catch (SQLException e){
@@ -248,15 +248,19 @@ public class ServerThread implements  Runnable{
                             CheckerBoard board = new CheckerBoard(8,8);
 
                             //used to setup a new session for the user
-                            SettingGamesUp setupOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
+                            SettingGamesUp setupGameOBJ = new SettingGamesUp(userUUID, socket, userUUID, board, requiresBot);
 
                             //used to update user record for gameSessionID column
-                            updateGameSessionID(setupOBJ.getCurrentFolderUUID());
+                            updateGameSessionID(setupGameOBJ.getCurrentFolderUUID());
                             //used to update user record for waiting for a player to join
-                            updateWaitingForPlayer();
+                            if(!requiresBot){
+                                updateWaitingForPlayer();
+                            }
+                            //updates player is in game status
                             playerInGame();
 
-                            GameHandler gameHandlerOBJ = new GameHandler(board,setupOBJ.getSessionFolderLocation(),socket);
+                            GameHandler gameHandlerOBJ = new GameHandler(board,setupGameOBJ.getSessionFolderLocation(),socket);
+                            gameHandlerOBJ.startGame(); //starts game
                             
                             break;
 

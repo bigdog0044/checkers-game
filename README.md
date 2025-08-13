@@ -66,3 +66,5 @@ key for requests
 - BOTREC - used by server to ask client if they want a bot in their game
 - STARTGAME  - used to inform client that the checker game has officially started
 - ENDGAME - used to inform the client that the checker game is now over
+- STARTBOARD - used to inform the client that the status of a board is being sent
+- ENDBOARD - used to inform the client that the status of the board has now been sent
