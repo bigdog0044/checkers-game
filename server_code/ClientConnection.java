@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
 import java.net.Socket;
 import server_code.CreatingUsers;
 
@@ -18,16 +20,16 @@ public class ClientConnection {
     private static String clientUUID;
     private static Socket socket;
     private static BufferedReader incomingMSG;
-    private static BufferedWriter output;
+    private static BufferedWriter outputMSG;
     public static void main(String[] args){
         try {
 
 
             socket = new Socket(address,port);
 
-            //socket input and output streams
+            //socket input and outputMSG streams
             incomingMSG = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            outputMSG = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 
 
@@ -50,13 +52,13 @@ public class ClientConnection {
                     }
 
                     //sends out a request to the server to validate the username and password
-                    output.write("AUTHCHECK");
-                    output.newLine();
-                    output.write(username);
-                    output.newLine();
-                    output.write(password);
-                    output.newLine();
-                    output.flush();
+                    outputMSG.write("AUTHCHECK");
+                    outputMSG.newLine();
+                    outputMSG.write(username);
+                    outputMSG.newLine();
+                    outputMSG.write(password);
+                    outputMSG.newLine();
+                    outputMSG.flush();
 
                     //reads in the response back from the server
                     line = incomingMSG.readLine();
@@ -83,11 +85,11 @@ public class ClientConnection {
                         case 1:
                             System.out.println("Start of case 1");
                             //sending off request to create a new user profile with client UUID
-                            output.write("CREATEUSERREQ");
-                            output.newLine();
-                            output.write(clientUUID);
-                            output.newLine();
-                            output.flush();
+                            outputMSG.write("CREATEUSERREQ");
+                            outputMSG.newLine();
+                            outputMSG.write(clientUUID);
+                            outputMSG.newLine();
+                            outputMSG.flush();
 
                             //reading response back from server
                             line = incomingMSG.readLine();
@@ -146,15 +148,15 @@ public class ClientConnection {
                                 }
 
                                 //sending off username,password,and role to the server to be verified and created
-                                output.write(username);
-                                output.newLine();
-                                output.write(password);
-                                output.newLine();
-                                output.write(role);
-                                output.newLine();
-                                output.write("ENDOFMSG");
-                                output.newLine();
-                                output.flush();
+                                outputMSG.write(username);
+                                outputMSG.newLine();
+                                outputMSG.write(password);
+                                outputMSG.newLine();
+                                outputMSG.write(role);
+                                outputMSG.newLine();
+                                outputMSG.write("ENDOFMSG");
+                                outputMSG.newLine();
+                                outputMSG.flush();
 
                                 //reading response back from the server
                                 line = incomingMSG.readLine();
@@ -195,9 +197,9 @@ public class ClientConnection {
 
                         case 3:
                             //sending off request to server to initiate session creation
-                            output.write("CREATINGSESSION");
-                            output.newLine();
-                            output.flush();
+                            outputMSG.write("CREATINGSESSION");
+                            outputMSG.newLine();
+                            outputMSG.flush();
 
                             //reading response back from server
                             line = incomingMSG.readLine();
@@ -222,7 +224,7 @@ public class ClientConnection {
                                 line = incomingMSG.readLine();
 
                                 while(!line.equals("VALIDRESPONSE")){
-                                    //reads output from the server
+                                    //reads outputMSG from the server
                                     if(line.equals("USERRESPONSEREQ")){
                                         while(!line.equals("ENDOFMSG")){
                                             System.out.println(line);
@@ -230,11 +232,11 @@ public class ClientConnection {
                                         }
                                         //allowing user to respond
                                         response = keyboardInputOBJ.nextLine();
-                                        output.write("USERRESPONSE");
-                                        output.newLine();
-                                        output.write(response);
-                                        output.newLine();
-                                        output.flush();
+                                        outputMSG.write("USERRESPONSE");
+                                        outputMSG.newLine();
+                                        outputMSG.write(response);
+                                        outputMSG.newLine();
+                                        outputMSG.flush();
                                     }
 
                                     //reading response back from server
@@ -281,12 +283,52 @@ public class ClientConnection {
                             if(line.equals("STARTGAME")){
                                 while(!line.equals("ENDGAME")){
                                     line = incomingMSG.readLine();
+                                    
+                                    //reading board from server
                                     if(line.equals("STARTBOARD")){
                                         while(!line.equals("ENDBOARD")){
                                             System.out.println(line);
                                             line = incomingMSG.readLine();
                                         }
                                     }
+
+                                    //allowing user to send location for their board
+                                    line = incomingMSG.readLine();
+                                    System.out.println("Current header: " + line);
+                                    Scanner playerMoveOBJ = new Scanner(System.in);
+                                    while(!line.equals("VALIDRESPONSE")){
+                                        if(line.equals("USERRESPONSEREQ")){
+
+                                            line = incomingMSG.readLine();
+
+                                            while(!line.equals("ENDOFMSG")){
+                                                System.out.println(line);
+                                                line = incomingMSG.readLine();
+                                            }
+                                            String response = playerMoveOBJ.nextLine();
+                                            
+                                            /*do not change this as this works...dunno how yet */
+                                            outputMSG.write("USERRESPONSE");
+                                            outputMSG.newLine();
+                                            outputMSG.write(response);
+                                            outputMSG.newLine();
+                                            outputMSG.flush();
+
+                                            line = incomingMSG.readLine();
+                                            System.out.println("next header: " + line);
+                                        }
+
+                                        //reads out the error message
+                                        if(line.equals("ERROR")){
+                                            while(!line.equals("ENDOFMSG")){
+                                                System.out.println(line);
+                                                line = incomingMSG.readLine();
+                                            }
+
+                                            line = "USERRESPONSEREQ";
+                                        }
+                                    }
+
                                 }
                             }
 
@@ -323,14 +365,14 @@ public class ClientConnection {
         } finally{
             try{
 
-                //closing all the sockets and input/output stream
+                //closing all the sockets and input/outputMSG stream
                 System.out.println("closing everything on client side");
-                output.write("CLOSE");
-                output.newLine();
-                output.flush();
+                outputMSG.write("CLOSE");
+                outputMSG.newLine();
+                outputMSG.flush();
 
                 try { if (incomingMSG != null) incomingMSG.close(); } catch (IOException ignored) {}
-                try{ output.close();} catch(IOException ignored){}
+                try{ outputMSG.close();} catch(IOException ignored){}
                 try { if (socket != null && !socket.isClosed()) socket.close(); } catch (IOException ignored) {}
             } catch (IOException e){
                 System.out.println("Error on finally statement in client connection: " + e);
@@ -343,9 +385,9 @@ public class ClientConnection {
 
     private static void welcomeMSG(){
         try{
-            output.write("USERWELCOMEMSG");
-            output.newLine();
-            output.flush();
+            outputMSG.write("USERWELCOMEMSG");
+            outputMSG.newLine();
+            outputMSG.flush();
 
             line = incomingMSG.readLine();
             if(line.equals("WELCOMEMSG")){
@@ -360,5 +402,29 @@ public class ClientConnection {
         }
 
     }
+
+    private void sendingMSG(String header){
+		try{
+			outputMSG.write(header);
+			outputMSG.newLine();
+			outputMSG.flush();
+		} catch(IOException error){
+			System.out.println("Error on sending msg in gamehandler: " + error);
+		}
+	}
+	
+	private void sendingMSG(String message, String startHeader, String endHeader){
+		try{
+			outputMSG.write(startHeader);
+			outputMSG.newLine();
+			outputMSG.write(message);
+			outputMSG.newLine();
+			outputMSG.write(endHeader);
+			outputMSG.newLine();
+			outputMSG.flush();
+		} catch(IOException error){
+			System.out.println("Error on sending msg in gamehandler: " + error);
+		}
+	}
 
 }

@@ -17,6 +17,7 @@ public class GameHandler{
 	private BufferedWriter outputMSG;
 	private boolean player1_turn = false;
 	private boolean player2_turn = false;
+	private CheckerGameLogic CheckerGameLogic = new CheckerGameLogic();
 
 
 	
@@ -44,7 +45,8 @@ public class GameHandler{
 				//sending the board to the user
 				sendBoardToUser();
 
-				//allowing user input
+				//allowing user input and processing the users selection
+				movingPiece();
 
 				gameFinished = true;
 	
@@ -72,7 +74,6 @@ public class GameHandler{
 			outputMSG.write("STARTBOARD");
 			outputMSG.newLine();
 			for(String[] row : arrayBoard){
-				System.out.println(row.length);
 				for(int colPos = 0; colPos < row.length; colPos++){
 
 					if(colPos == row.length - 1){
@@ -99,18 +100,85 @@ public class GameHandler{
 	 * this method is used to process the user moving a piece on the board
 	 */
 	private void movingPiece(){
-		String message = "Please choose a piece on the board to move";
-		sendingMSG(message, "USERRESPONSEREQ", "ENDOFMSG");
+		int[] userSelection= new int[2];
+		boolean validMove = false;
+		//this is used to handle user responses and execute the players move on the checker board
+		while(!validMove){
+			userSelection[0] = userReqPieceMove(true);
+			userSelection[1] = userReqPieceMove(false);
 
-		try{
+			validMove = true;
+			try{
+				CheckerGameLogic.validMove(userSelection, null, board, null)
+			} catch (IllegalMove message){
 
-			String line = incomingMSG.readLine();
-		} catch (IOException error){
-			System.out.println("Error on movingPiece method: " + )
+			}
 		}
+
+
+		//sending a response back to the user that the response was valid
+		sendingMSG("VALIDRESPONSE");
 
 	}
 
+	/*
+	 * used to process user response and return the position the user wants to move
+	 * @args isRow - used to indicate if its a row or col that needs to be processed 
+	 */
+	private int userReqPieceMove(boolean isRow){
+		int value = 0;
+		if(isRow){
+			while(true){
+				String message = "Please choose a row on the board to move. Note the board starts from 0 up to 7";
+				sendingMSG(message, "USERRESPONSEREQ", "ENDOFMSG");
+		
+				try{
+		
+					String line = incomingMSG.readLine();
+		
+					if(line.equals("USERRESPONSE")){
+						try{
+
+							line = incomingMSG.readLine();
+							System.out.println("Game handler user response: " + line);
+							value = Integer.parseInt(line);
+							break;
+						} catch (NumberFormatException error){
+							sendingMSG("Invalid response please enter a number", "ERROR", "ENDOFMSG");
+						}
+					}
+				} catch (IOException error){
+					System.out.println("Error on movingPiece method: " + error);
+				}
+			}
+		} else {
+			while(true){
+				String message = "Please choose a column on the board to move. Note the board starts from 0 up to 7";
+				sendingMSG(message, "USERRESPONSEREQ", "ENDOFMSG");
+		
+				try{
+		
+					String line = incomingMSG.readLine();
+		
+					if(line.equals("USERRESPONSE")){
+						try{
+
+							line = incomingMSG.readLine();
+							System.out.println("Game handler user response: " + line);
+							value = Integer.parseInt(line);
+							break;
+						} catch (NumberFormatException error){
+							sendingMSG("Invalid response please enter a number", "ERROR", "ENDOFMSG");
+						}
+					}
+				} catch (IOException error){
+					System.out.println("Error on movingPiece method: " + error);
+				}
+			}
+		}
+
+		return value;
+	}
 	private void sendingMSG(String header){
 		try{
 			outputMSG.write(header);
