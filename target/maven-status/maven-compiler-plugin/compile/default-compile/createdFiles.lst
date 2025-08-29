@@ -1,13 +1,2 @@
-game_code\CheckerPieces.class
-game_code\CheckerGameLogic.class
-game_code\IllegalMove.class
-server_code\CreatingUsers.class
-game_code\InvalidPiece.class
-server_code\DBUsernameAndPass.class
-server_code\SettingGamesUp.class
-game_code\CheckerBoard.class
 server_code\CreatingUsersError.class
-game_code\PlayerTeam.class
 server_code\ClientConnection.class
-game_code\Direction.class
-game_code\Colour.class

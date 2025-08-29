@@ -1,12 +1,11 @@
 package game_code;
 
-import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
-import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 
 public class GameHandler{
 	private CheckerBoard board;
@@ -109,7 +108,7 @@ public class GameHandler{
 
 			validMove = true;
 			try{
-				CheckerGameLogic.validMove(userSelection, null, board, null)
+				CheckerGameLogic.validMove(userSelection, null, board, null);
 			} catch (IllegalMove message){
 
 			}

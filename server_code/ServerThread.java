@@ -7,17 +7,16 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Scanner;
-import java.net.Socket;
 import java.net.InetAddress;
+import java.net.Socket;
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
 import game_code.CheckerBoard;
 import game_code.GameHandler;
 
@@ -30,16 +29,18 @@ public class ServerThread implements  Runnable{
     private BufferedWriter output;
     private boolean authenticated = false;
     private String userUUID;
+    private String DBName;
 
     public ServerThread(Socket socket, ServerMain main){
         this.socket = socket;
         this.serverMain = main;
+        this.DBName = "checkergamedb";
         DBUsernameAndPass dbinfo = new DBUsernameAndPass();
 
         try{
              Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/checkersgamedb", dbinfo.getUsername(), dbinfo.getPassword());
+            "jdbc:mysql://localhost:3306/" + this.DBName, dbinfo.getUsername(), dbinfo.getPassword());
         } catch (ClassNotFoundException | SQLException e){
             System.out.println("ServerThread class initialisation method error: " + e);
         }
