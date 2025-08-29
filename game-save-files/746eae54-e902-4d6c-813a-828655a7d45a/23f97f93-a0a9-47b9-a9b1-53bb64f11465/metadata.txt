@@ -1,6 +1,0 @@
-Owner: 746eae54-e902-4d6c-813a-828655a7d45a
-Game-save-dir-location: game-save-files\746eae54-e902-4d6c-813a-828655a7d45a\23f97f93-a0a9-47b9-a9b1-53bb64f11465\gameSave.txt
-Number-rows: 8
-Number-columns: 8
-Max-players: 2
-Requires bot: true
