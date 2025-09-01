@@ -110,7 +110,7 @@ public class GameHandler{
 			try{
 				CheckerGameLogic.validMove(userSelection, null, board, null);
 			} catch (IllegalMove message){
-
+				System.out.println(message);
 			}
 		}
 
