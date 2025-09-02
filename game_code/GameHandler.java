@@ -3,27 +3,41 @@ package game_code;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import server_code.DBUsernameAndPass;
 
 public class GameHandler{
 	private CheckerBoard board;
 	private String playerFolder = "";
 	private Socket socket;
-	private boolean gameFinished = false;
 	private BufferedReader incomingMSG;
 	private BufferedWriter outputMSG;
-	private boolean player1_turn = false;
-	private boolean player2_turn = false;
 	private CheckerGameLogic CheckerGameLogic = new CheckerGameLogic();
-
+	private Connection connection;
+	private String userUUID;
 
 	
-	public GameHandler(CheckerBoard board, String playerFolder, Socket socket){
+	public GameHandler(CheckerBoard board,Socket socket, String playerID){
 		this.board = board;
 		this.playerFolder = playerFolder;
 		this.socket = socket;
+		this.userUUID = playerID;
+
+		//conencting to the database
+		try{
+			DBUsernameAndPass dbinfo = new DBUsernameAndPass();
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			connection = DriverManager.getConnection(
+	        "jdbc:mysql://localhost:3306/checkergamedb", dbinfo.getUsername(), dbinfo.getPassword());
+		} catch (ClassNotFoundException | SQLException e){
+			System.out.println("Error on GameHandler: " + e);
+		}
 		
 	}
 	
@@ -31,34 +45,33 @@ public class GameHandler{
 	* used to start the gaming session
 	*/
 	
-	public void startGame(){
-		try{
-			this.incomingMSG = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-			this.outputMSG = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+	/*
+	 * used to check if the game is over
+	 */
 
-			//this sends out a message saying game has started
-			sendingMSG("STARTGAME");
-			
-			//outputting client 
-			while(!gameFinished){
-				//sending the board to the user
-				sendBoardToUser();
-
-				//allowing user input and processing the users selection
-				movingPiece();
-
-				gameFinished = true;
+	 private boolean isGameOver(){
+		 try{
 	
-			}
+			 String sqlQuery = "SELECT * FROM `gameinfo` WHERE owner_game_ID=? AND gameOver=?;";
+			 PreparedStatement preparedSql = connection.prepareStatement(sqlQuery);
+			 preparedSql.setString(1, userUUID);
+			 preparedSql.setBoolean(2, true);
+			 ResultSet result = preparedSql.executeQuery();
 
-			sendingMSG("ENDGAME");
-		} catch (IOException error){
-			System.out.println("Error on game handler method: " + error);
-		}
+			 System.out.println(result.isBeforeFirst());
 
-	}
+			 /*
+			  * this is the following of what this outputs
+			  * false: no data has been found
+			  * true: data has been found
+			  */
+			 return result.isBeforeFirst();
+		 } catch (SQLException error){
+			 System.out.println("Error on isGameOver: " + error);
+		 }
 
-
+		 return false;
+	 }
 	/*
 	* used to save player data
 	*/
@@ -103,8 +116,8 @@ public class GameHandler{
 		boolean validMove = false;
 		//this is used to handle user responses and execute the players move on the checker board
 		while(!validMove){
-			userSelection[0] = userReqPieceMove(true);
-			userSelection[1] = userReqPieceMove(false);
+			//userSelection[0] = userReqPieceMove(true);
+			//userSelection[1] = userReqPieceMove(false);
 
 			validMove = true;
 			try{
@@ -118,65 +131,6 @@ public class GameHandler{
 		//sending a response back to the user that the response was valid
 		sendingMSG("VALIDRESPONSE");
 
-	}
-
-	/*
-	 * used to process user response and return the position the user wants to move
-	 * @args isRow - used to indicate if its a row or col that needs to be processed 
-	 */
-	private int userReqPieceMove(boolean isRow){
-		int value = 0;
-		if(isRow){
-			while(true){
-				String message = "Please choose a row on the board to move. Note the board starts from 0 up to 7";
-				sendingMSG(message, "USERRESPONSEREQ", "ENDOFMSG");
-		
-				try{
-		
-					String line = incomingMSG.readLine();
-		
-					if(line.equals("USERRESPONSE")){
-						try{
-
-							line = incomingMSG.readLine();
-							System.out.println("Game handler user response: " + line);
-							value = Integer.parseInt(line);
-							break;
-						} catch (NumberFormatException error){
-							sendingMSG("Invalid response please enter a number", "ERROR", "ENDOFMSG");
-						}
-					}
-				} catch (IOException error){
-					System.out.println("Error on movingPiece method: " + error);
-				}
-			}
-		} else {
-			while(true){
-				String message = "Please choose a column on the board to move. Note the board starts from 0 up to 7";
-				sendingMSG(message, "USERRESPONSEREQ", "ENDOFMSG");
-		
-				try{
-		
-					String line = incomingMSG.readLine();
-		
-					if(line.equals("USERRESPONSE")){
-						try{
-
-							line = incomingMSG.readLine();
-							System.out.println("Game handler user response: " + line);
-							value = Integer.parseInt(line);
-							break;
-						} catch (NumberFormatException error){
-							sendingMSG("Invalid response please enter a number", "ERROR", "ENDOFMSG");
-						}
-					}
-				} catch (IOException error){
-					System.out.println("Error on movingPiece method: " + error);
-				}
-			}
-		}
-
-		return value;
 	}
 	private void sendingMSG(String header){
 		try{

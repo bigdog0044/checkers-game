@@ -20,6 +20,7 @@ public class SettingGamesUp {
 	private static final String trackerFileName = "saveTracker";
 	private String sessionFolderUUID;
 	private String sessionFolderLocation;
+	private Socket socket
 	private static BufferedWriter output;
 	private String userUUID;
 
@@ -27,6 +28,7 @@ public class SettingGamesUp {
 		try{
 			output = new BufferedWriter( new OutputStreamWriter(socket.getOutputStream()));
 			this.userUUID = userID;
+			this.socket = socket;
 
 			output.write("SESSIONCREATING");
 			output.newLine();
@@ -66,6 +68,9 @@ public class SettingGamesUp {
 
 			//used to populate gameinfo table
 			updateGameInfoRecord(sessionFolderUUID, userUUID);
+
+			//used to start the player1 communication method
+			Player1Communication player1Comm = new Player1Communication(userID, userID)
 
 		} catch (IOException e){
 			System.out.println("Error on UserFolderSetup: " + e);
@@ -195,13 +200,14 @@ public class SettingGamesUp {
             connection = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/" + DBName, dbinfo.getUsername(), dbinfo.getPassword());
 
-			String sqlStatement = " INSERT INTO `gameinfo`(`owner_game_ID`, `player1_ID`, `player2_ID`, `player_tern`, `game_ID`) VALUES (?,?,?,?,?)";
+			String sqlStatement = " INSERT INTO `gameinfo`(`owner_game_ID`, `player1_ID`, `player2_ID`, `player_tern`, `game_ID`, `gameOver`) VALUES (?,?,?,?,?,?)";
             PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
             preparedSQL.setString(1,userUUID);
             preparedSQL.setString(2,userUUID);
 			preparedSQL.setNull(3, java.sql.Types.VARCHAR);
 			preparedSQL.setString(4, "player1");
 			preparedSQL.setString(5, gameSessionUUID);
+			preparedSQL.setBoolean(6, false);
             preparedSQL.executeUpdate();
         } catch (ClassNotFoundException | SQLException e){
             System.out.println("ServerThread class initialisation method error: " + e);
