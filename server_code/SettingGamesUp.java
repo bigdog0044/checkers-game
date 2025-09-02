@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.FileWriter;
@@ -59,6 +63,8 @@ public class SettingGamesUp {
 			output.write("ENDSESSCREATE");
 			output.newLine();
 			output.flush();
+
+			//used to populate gameinfo table
 
 		} catch (IOException e){
 			System.out.println("Error on UserFolderSetup: " + e);
@@ -172,5 +178,32 @@ public class SettingGamesUp {
 		}
 		
 		
+	}
+
+	/*
+	 * this method is used to update the gameinfo table with a new game session
+	 * this will be used later by the server to check for any missing files
+	 */
+
+	private void updateGameInfoRecord(String gameSessionUUID, String userUUID){
+		String DBName = "checkergameDB";
+		DBUsernameAndPass dbinfo = new DBUsernameAndPass();
+		Connection connection;
+		try{
+             Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/" + DBName, dbinfo.getUsername(), dbinfo.getPassword());
+
+			String sqlStatement = " INSERT INTO `gameinfo`(`owner_game_ID`, `player1_ID`, `player2_ID`, `player_tern`, `game_ID`) VALUES (?,?,?,?,?)";
+            PreparedStatement preparedSQL = connection.prepareStatement(sqlStatement);
+            preparedSQL.setString(1,userUUID);
+            preparedSQL.setString(2,userUUID);
+			preparedSQL.setNull(3, java.sql.Types.VARCHAR);
+			preparedSQL.setString(4, "player1");
+			preparedSQL.setString(5, gameSessionUUID);
+            preparedSQL.executeUpdate();
+        } catch (ClassNotFoundException | SQLException e){
+            System.out.println("ServerThread class initialisation method error: " + e);
+        }
 	}
 }
