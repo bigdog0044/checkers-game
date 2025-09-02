@@ -1,17 +1,17 @@
 package server_code;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.FileWriter;
 import java.util.UUID;
+
 import game_code.CheckerBoard;
 
 
@@ -65,6 +65,7 @@ public class SettingGamesUp {
 			output.flush();
 
 			//used to populate gameinfo table
+			updateGameInfoRecord(sessionFolderUUID, userUUID);
 
 		} catch (IOException e){
 			System.out.println("Error on UserFolderSetup: " + e);

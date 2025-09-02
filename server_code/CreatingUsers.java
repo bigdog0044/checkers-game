@@ -2,17 +2,13 @@
 
 	package server_code;
 
-import java.net.Socket;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.util.Scanner;
-import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 class CreatingUsersError extends Exception{
@@ -30,7 +26,7 @@ public class CreatingUsers{
 			DBUsernameAndPass dbinfo = new DBUsernameAndPass();
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(
-	        "jdbc:mysql://localhost:3306/checkersgamedb", dbinfo.getUsername(), dbinfo.getPassword());
+	        "jdbc:mysql://localhost:3306/checkergamedb", dbinfo.getUsername(), dbinfo.getPassword());
 		} catch (ClassNotFoundException | SQLException e){
 			System.out.println("Error on CreatingUsers: " + e);
 		}
