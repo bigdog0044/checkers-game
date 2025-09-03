@@ -20,7 +20,7 @@ public class SettingGamesUp {
 	private static final String trackerFileName = "saveTracker";
 	private String sessionFolderUUID;
 	private String sessionFolderLocation;
-	private Socket socket
+	private Socket socket;
 	private static BufferedWriter output;
 	private String userUUID;
 
@@ -70,8 +70,6 @@ public class SettingGamesUp {
 			updateGameInfoRecord(sessionFolderUUID, userUUID);
 
 			//used to start the player1 communication method
-			Player1Communication player1Comm = new Player1Communication(userID, userID)
-
 		} catch (IOException e){
 			System.out.println("Error on UserFolderSetup: " + e);
 		}

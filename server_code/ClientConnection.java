@@ -280,61 +280,13 @@ public class ClientConnection {
                             //this part of the code reads the response from the server letting the client know that the game has started
 
                             line = incomingMSG.readLine();
-                            if(line.equals("STARTGAME")){
-                                while(!line.equals("ENDGAME")){
-                                    line = incomingMSG.readLine();
-                                    
-                                    //reading board from server
-                                    if(line.equals("STARTBOARD")){
-                                        while(!line.equals("ENDBOARD")){
-                                            System.out.println(line);
-                                            line = incomingMSG.readLine();
-                                        }
-                                    }
 
-                                    //allowing user to send location for their board
-                                    line = incomingMSG.readLine();
-                                    System.out.println("Current header: " + line);
-                                    Scanner playerMoveOBJ = new Scanner(System.in);
-                                    while(!line.equals("VALIDRESPONSE")){
-                                        if(line.equals("USERRESPONSEREQ")){
-
-                                            line = incomingMSG.readLine();
-
-                                            while(!line.equals("ENDOFMSG")){
-                                                System.out.println(line);
-                                                line = incomingMSG.readLine();
-                                            }
-                                            String response = playerMoveOBJ.nextLine();
-                                            
-                                            /*do not change this as this works...dunno how yet */
-                                            outputMSG.write("USERRESPONSE");
-                                            outputMSG.newLine();
-                                            outputMSG.write(response);
-                                            outputMSG.newLine();
-                                            outputMSG.flush();
-
-                                            line = incomingMSG.readLine();
-                                            System.out.println("next header: " + line);
-                                        }
-
-                                        //reads out the error message
-                                        if(line.equals("ERROR")){
-                                            while(!line.equals("ENDOFMSG")){
-                                                System.out.println(line);
-                                                line = incomingMSG.readLine();
-                                            }
-
-                                            line = "USERRESPONSEREQ";
-                                        }
-                                    }
-
-                                }
+                            if(line.equals("STARTPLAYER1")){
+                                PlayerGameCommunication gameCommunication = new PlayerGameCommunication(socket);
+                                gameCommunication.startPlaying();
+                            } else{
+                                System.out.println("Something other than start player 1 message header was sent: " + line);
                             }
-
-                            //reading response on rendering board from server
-                            line = incomingMSG.readLine();
-
                             break;
                         case 4:
                             System.out.println("Logging out. Please re-run program to re-authenticate");

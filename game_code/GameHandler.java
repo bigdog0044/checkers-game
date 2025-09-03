@@ -3,6 +3,8 @@ package game_code;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,21 +16,17 @@ import server_code.DBUsernameAndPass;
 
 public class GameHandler{
 	private CheckerBoard board;
-	private String playerFolder = "";
 	private Socket socket;
 	private BufferedReader incomingMSG;
 	private BufferedWriter outputMSG;
 	private CheckerGameLogic CheckerGameLogic = new CheckerGameLogic();
 	private Connection connection;
-	private String userUUID;
+	private String gameID;
+	private String gameOwnerID; 
+	private String line; //used to process response from user
 
 	
-	public GameHandler(CheckerBoard board,Socket socket, String playerID){
-		this.board = board;
-		this.playerFolder = playerFolder;
-		this.socket = socket;
-		this.userUUID = playerID;
-
+	public GameHandler(CheckerBoard board,Socket socket, String gameID){
 		//conencting to the database
 		try{
 			DBUsernameAndPass dbinfo = new DBUsernameAndPass();
@@ -39,12 +37,85 @@ public class GameHandler{
 			System.out.println("Error on GameHandler: " + e);
 		}
 		
+		this.board = board;
+		this.socket = socket;
+		this.gameID = gameID;
+		this.gameOwnerID = ownerID();
+
+		try{
+			this.incomingMSG = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.outputMSG = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
+		} catch (IOException error){
+			System.out.println("Error on socket within GameHandler");
+		}
+
+		//used to start the game session
+		while(!isGameOver()){
+			System.out.println("this is running");
+
+			//initialises who is going
+			if(playerTurn().equals("player1")){
+				sendingMSG("STARTPLAYER1");
+			} else if (playerTurn().equals("player2")){
+				sendingMSG("STARTPLAYER2");
+			}
+
+			sendingMSGWithoutFlush("USERRESPONSEREQ");
+			sendingMSGWithoutFlush("Please choose from the following options");
+			sendingMSGWithoutFlush("[1] move piece");
+			sendingMSGWithoutFlush("[2] quit game");
+			sendingMSG("ENDMSG");
+
+			//int userResponse;
+			//userResponse = incomingMSG.read();
+
+
+			
+			
+
+		}
+
+
+		//informs the players the game is now over
+		sendingMSG("ENDGAME");
+		
+	}
+
+	/*used to get the owner of the game session ID */
+
+	private String ownerID(){
+		String output = "";
+		try{
+			String sqlStatement = "SELECT `owner_game_ID` FROM `gameinfo` WHERE game_ID = ?; ";
+			PreparedStatement preparedSqlStatement = connection.prepareStatement(sqlStatement);
+			preparedSqlStatement.setString(1, this.gameID);
+			ResultSet result = preparedSqlStatement.executeQuery();
+			result.next();
+			output = result.getString(1);
+		} catch (SQLException error){
+			System.out.println("Error on ownerID method: " + error);
+		}
+
+		return output;
 	}
 	
-	/*
-	* used to start the gaming session
-	*/
+	/*used to work out which players turn it is */
 	
+	private String playerTurn(){
+		String output = "";
+		try{
+			String sqlStatement = "SELECT `player_tern` FROM `gameinfo` WHERE `game_ID` = ?;";
+			PreparedStatement preparedSqlStatement = connection.prepareStatement(sqlStatement);
+			preparedSqlStatement.setString(1, this.gameID);
+			ResultSet result = preparedSqlStatement.executeQuery();
+			result.next();
+			output = result.getString(1);
+		} catch (SQLException error){
+			System.out.println("Error on playerTurn method: " + error);
+		}
+
+		return output;
+	}
 	/*
 	 * used to check if the game is over
 	 */
@@ -54,11 +125,9 @@ public class GameHandler{
 	
 			 String sqlQuery = "SELECT * FROM `gameinfo` WHERE owner_game_ID=? AND gameOver=?;";
 			 PreparedStatement preparedSql = connection.prepareStatement(sqlQuery);
-			 preparedSql.setString(1, userUUID);
+			 preparedSql.setString(1, this.gameOwnerID);
 			 preparedSql.setBoolean(2, true);
 			 ResultSet result = preparedSql.executeQuery();
-
-			 System.out.println(result.isBeforeFirst());
 
 			 /*
 			  * this is the following of what this outputs
@@ -81,30 +150,7 @@ public class GameHandler{
 	 * used to send the board status to the user
 	 */
 	private void sendBoardToUser(){
-		String[][] arrayBoard = board.renderBoardAsStringArray();
-		try{
-			outputMSG.write("STARTBOARD");
-			outputMSG.newLine();
-			for(String[] row : arrayBoard){
-				for(int colPos = 0; colPos < row.length; colPos++){
-
-					if(colPos == row.length - 1){
-						outputMSG.write(row[colPos]);
-						outputMSG.newLine();
-					} else{
-						outputMSG.write(row[colPos]);
-						outputMSG.write("\t");
-					}
-				}
-				outputMSG.newLine();
-			}
-
-			outputMSG.write("ENDBOARD");
-			outputMSG.newLine();
-			outputMSG.flush();
-		} catch (IOException error){
-			System.out.println("Error on sending status of board to user: " + error);
-		}
+		
 
 	}
 
@@ -135,6 +181,16 @@ public class GameHandler{
 	private void sendingMSG(String header){
 		try{
 			outputMSG.write(header);
+			outputMSG.newLine();
+			outputMSG.flush();
+		} catch(IOException error){
+			System.out.println("Error on sending msg in gamehandler: " + error);
+		}
+	}
+	
+	private void sendingMSGWithoutFlush(String message){
+		try{
+			outputMSG.write(message);
 			outputMSG.newLine();
 			outputMSG.flush();
 		} catch(IOException error){

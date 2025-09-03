@@ -260,8 +260,7 @@ public class ServerThread implements  Runnable{
                             //updates player is in game status
                             playerInGame();
 
-                            GameHandler gameHandlerOBJ = new GameHandler(board,setupGameOBJ.getSessionFolderLocation(),socket, userUUID);
-                            gameHandlerOBJ.startGame(); //starts game
+                            GameHandler gameHandlerOBJ = new GameHandler(board, socket, setupGameOBJ.getCurrentFolderUUID());
                             
                             break;
 
