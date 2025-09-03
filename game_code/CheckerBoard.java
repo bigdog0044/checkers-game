@@ -1,5 +1,7 @@
 package game_code;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 class InvalidPiece extends Exception{
     public InvalidPiece(String value){
@@ -212,7 +214,15 @@ public class CheckerBoard {
         }
     }
 
-    private void convertingBoardToJSON(){
+
+    /*
+     * this part of the program converts the checkerboard into a JSONObject which can then
+     * be transmitted to the user
+     * @return JSONObject of checkerboard
+     */
+    private JSONObject convertingBoardToJSON(){
+        JSONObject object = new JSONObject();
         
+        return object;
     }
 }
