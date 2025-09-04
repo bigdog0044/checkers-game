@@ -220,9 +220,19 @@ public class CheckerBoard {
      * be transmitted to the user
      * @return JSONObject of checkerboard
      */
-    private JSONObject convertingBoardToJSON(){
+    public JSONObject convertingBoardToJSON(){
         JSONObject object = new JSONObject();
-        
+        int rowNum = boardStatus()[0].length;
+        for (int rowPos = 0; rowPos < boardStatus()[0].length; rowPos++){
+            JSONArray boardRow = new JSONArray();
+            for(int value : boardStatus()[rowPos]){
+                boardRow.add(value);
+            }
+            object.put(rowNum, boardRow);
+            rowNum--;
+        }
+
+        System.out.println(object.toJSONString());
         return object;
     }
 }

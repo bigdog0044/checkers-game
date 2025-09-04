@@ -64,6 +64,10 @@ key for requests
 - INVALIDRESPONSE - used to notify client that the response was rejected by server
 - ENDSESSCREATE - used to notify client that the session creation is over
 - BOTREC - used by server to ask client if they want a bot in their game
+- BOARDREC - used by client to ask server for current board status
 - STARTPLAYER1 / STARTPLAYER2  - used to inform client that the checker game has officially started
 - ENDPLAYER1 / ENDPLAYER2  - used to inform client that the client turn is over
 - ENDGAME - used to inform the client that the checker game is now over
+- GAMESTARTED - used to inform client that game has started
+- PLAYERTYPE - used to ask server what status is the current player
+- ENDPLAYERTYPE - used to state that its the end of the request

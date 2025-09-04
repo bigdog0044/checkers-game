@@ -279,14 +279,8 @@ public class ClientConnection {
 
                             //this part of the code reads the response from the server letting the client know that the game has started
 
-                            line = incomingMSG.readLine();
-
-                            if(line.equals("STARTPLAYER1")){
-                                PlayerGameCommunication gameCommunication = new PlayerGameCommunication(socket);
-                                gameCommunication.startPlaying();
-                            } else{
-                                System.out.println("Something other than start player 1 message header was sent: " + line);
-                            }
+                            PlayerGameCommunication gameCommunication = new PlayerGameCommunication(socket, clientUUID);
+                            gameCommunication.startPlaying();
                             break;
                         case 4:
                             System.out.println("Logging out. Please re-run program to re-authenticate");

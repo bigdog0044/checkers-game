@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.json.simple.JSONObject;
+
 import server_code.DBUsernameAndPass;
 
 public class GameHandler{
@@ -49,37 +51,101 @@ public class GameHandler{
 			System.out.println("Error on socket within GameHandler");
 		}
 
-		//used to start the game session
-		while(!isGameOver()){
-			System.out.println("this is running");
+		//used to inform any clients connected that the game has started
+		sendingMSG("GAMESTARTED");
 
-			//initialises who is going
-			if(playerTurn().equals("player1")){
-				sendingMSG("STARTPLAYER1");
-			} else if (playerTurn().equals("player2")){
-				sendingMSG("STARTPLAYER2");
+
+		try{
+
+			line = incomingMSG.readLine();
+	
+			if (line.equals("PLAYERTYPE")){
+				String ID = "";
+	
+				while(!line.equals("ENDPLAYERTYPE")){
+					ID = incomingMSG.readLine();
+					line = incomingMSG.readLine();
+				}
+	
+				String playerType = checkPlayerType(ID);
 			}
-
-			sendingMSGWithoutFlush("USERRESPONSEREQ");
-			sendingMSGWithoutFlush("Please choose from the following options");
-			sendingMSGWithoutFlush("[1] move piece");
-			sendingMSGWithoutFlush("[2] quit game");
-			sendingMSG("ENDMSG");
-
-			//int userResponse;
-			//userResponse = incomingMSG.read();
-
-
-			
-			
-
+		} catch (IOException error){
+			System.out.println("Error on trying to read playertype header stuff: " + error);
 		}
+
+		//used to start the game session
+		// while(!isGameOver()){
+		// 	System.out.println("this is running");
+			
+
+		// 	//initialises who is going
+		// 	if(playerTurn().equals("player1")){
+		// 		sendingMSG("STARTPLAYER1");
+		// 	} else if (playerTurn().equals("player2")){
+		// 		sendingMSG("STARTPLAYER2");
+		// 	}
+
+		// 	try{
+		// 		line = incomingMSG.readLine();
+		// 		System.out.println("GameHandler currently reads: " + line);
+		// 		if (line.equals("BOARDREC")) {
+		// 			sendBoardToUser();
+		// 		}
+		// 	} catch (IOException error){
+		// 		System.out.println(error);
+		// 	}
+
+		// 	// sendingMSGWithoutFlush("USERRESPONSEREQ");
+		// 	// sendingMSGWithoutFlush("Please choose from the following options");
+		// 	// sendingMSGWithoutFlush("[1] move piece");
+		// 	// sendingMSGWithoutFlush("[2] quit game");
+		// 	// sendingMSG("ENDMSG");
+
+		// 	//int userResponse;
+		// 	//userResponse = incomingMSG.read();
+
+
+			
+			
+
+		// }
 
 
 		//informs the players the game is now over
 		sendingMSG("ENDGAME");
 		
 	}
+
+	/*
+	 * this is used to find out if player is either player 1 or 2
+	 * @return player type
+	 */
+
+	 private String checkPlayerType(String playerUUID){
+		String result = "";
+		try{
+
+			String sqlStatement = "SELECT `player1_ID` FROM `gameinfo` WHERE `player1_ID` = ? AND `game_ID`=?";
+			PreparedStatement preparedSqlStatement = connection.prepareStatement(sqlStatement);
+			preparedSqlStatement.setString(1,playerUUID);
+			preparedSqlStatement.setString(2, this.gameID);
+			ResultSet resultSet = preparedSqlStatement.executeQuery();
+
+			/*
+			 * if resultSet = false -> true -> means its player2
+			 * if resultSet = true -> false -> means its player1 
+			 */
+			if(!resultSet.next()){
+				result = "player1";
+			} else {
+				result = "player2";
+			}
+		} catch (SQLException error){
+			System.out.println("Error on sql for checkPlayerType: " + error);
+		}
+
+		return result;
+	 }
 
 	/*used to get the owner of the game session ID */
 
@@ -150,8 +216,13 @@ public class GameHandler{
 	 * used to send the board status to the user
 	 */
 	private void sendBoardToUser(){
+		String boardStrRowLength = Integer.toString(board.returnRowLen());
+		JSONObject boardJsonObject = board.convertingBoardToJSON();
 		
-
+		sendingMSGWithoutFlush("STARTBOARD");
+		sendingMSGWithoutFlush(boardStrRowLength);
+		sendingMSGWithoutFlush(boardJsonObject.toJSONString());
+		sendingMSG("ENDBOARD");
 	}
 
 	/*

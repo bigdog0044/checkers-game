@@ -7,13 +7,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
+import org.json.simple.JSONObject;
+
 public class PlayerGameCommunication{
     private Socket socket;
     private BufferedReader incomingMSG;
     private BufferedWriter outputMSG;
     private String line;
-    public PlayerGameCommunication(Socket socket){
+	private String playerType = "";
+	private String userUUID;
+    public PlayerGameCommunication(Socket socket, String userUUID){
         this.socket = socket;
+		this.userUUID = userUUID;
         try{
 			this.incomingMSG = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 			this.outputMSG = new BufferedWriter(new OutputStreamWriter(this.socket.getOutputStream()));
@@ -24,13 +29,37 @@ public class PlayerGameCommunication{
 
     public void startPlaying(){
         try{
-            line = this.incomingMSG.readLine();
+			int boardRowLength = 0;
+			String nonJsonBoard = "";
 
+			line = incomingMSG.readLine();
+			if (line.equals("GAMESTARTED")){
+				sendingMSG(userUUID, "PLAYERTYPE", "ENDPLAYERTYPE");
+
+				line = incomingMSG.readLine();
+			} else{
+				System.out.println("Something went wrong with PlayerGameComms: " + line);
+			}
+		
             while (!line.equals("ENDGAME")){
-                line = incomingMSG.readLine();
-                if(line.equals("USERRESPONSEREQ")){
+				sendingMSG("BOARDREC");
+
+				line = incomingMSG.readLine();
+				System.out.println("Player client currently reads: "+ line);
+
+				if(line.equals("STARTBOARD")){
+					boardRowLength = Integer.parseInt(incomingMSG.readLine());
+					nonJsonBoard = incomingMSG.readLine();
+					incomingMSG.readLine(); //to put it at the end of the message
+				}
+
+				System.out.println(boardRowLength);
+				System.out.println(nonJsonBoard);
+                
+				// line = incomingMSG.readLine();
+                // if(line.equals("USERRESPONSEREQ")){
                     
-                }
+                // }
             }
         } catch (IOException error){
             System.out.println("Error on player communication startPlaying method: " + error);
@@ -39,6 +68,10 @@ public class PlayerGameCommunication{
 
 
     }
+
+	public void displayBoard(JSONObject boardJsonObject){
+		
+	}
 
     private void sendingMSG(String header){
 		try{
