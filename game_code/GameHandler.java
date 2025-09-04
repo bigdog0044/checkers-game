@@ -68,6 +68,8 @@ public class GameHandler{
 				}
 	
 				String playerType = checkPlayerType(ID);
+
+				sendingMSG(playerType, "PLAYERTYPE", "ENDPLAYERTYPE");
 			}
 		} catch (IOException error){
 			System.out.println("Error on trying to read playertype header stuff: " + error);

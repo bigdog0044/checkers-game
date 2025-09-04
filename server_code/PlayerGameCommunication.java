@@ -37,6 +37,15 @@ public class PlayerGameCommunication{
 				sendingMSG(userUUID, "PLAYERTYPEREC", "ENDPLAYERTYPEREC");
 
 				line = incomingMSG.readLine();
+
+				if(line.equals("PLAYERTYPE")){
+					while(!line.equals("ENDPLAYERTYPE")){
+						playerType = incomingMSG.readLine();
+						line = incomingMSG.readLine();
+					}
+				}
+
+				System.out.println(playerType);
 			} else{
 				System.out.println("Something went wrong with PlayerGameComms: " + line);
 			}
