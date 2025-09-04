@@ -69,5 +69,6 @@ key for requests
 - ENDPLAYER1 / ENDPLAYER2  - used to inform client that the client turn is over
 - ENDGAME - used to inform the client that the checker game is now over
 - GAMESTARTED - used to inform client that game has started
-- PLAYERTYPE - used to ask server what status is the current player
+- PLAYERTYPEREC - used to ask server what status is the current player
+- PLAYERTYPE - used by the server to respond to the client about what player type they are
 - ENDPLAYERTYPE - used to state that its the end of the request

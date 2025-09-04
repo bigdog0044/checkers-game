@@ -59,10 +59,10 @@ public class GameHandler{
 
 			line = incomingMSG.readLine();
 	
-			if (line.equals("PLAYERTYPE")){
+			if (line.equals("PLAYERTYPEREC")){
 				String ID = "";
 	
-				while(!line.equals("ENDPLAYERTYPE")){
+				while(!line.equals("ENDPLAYERTYPEREC")){
 					ID = incomingMSG.readLine();
 					line = incomingMSG.readLine();
 				}

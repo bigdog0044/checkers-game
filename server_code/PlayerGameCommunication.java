@@ -34,7 +34,7 @@ public class PlayerGameCommunication{
 
 			line = incomingMSG.readLine();
 			if (line.equals("GAMESTARTED")){
-				sendingMSG(userUUID, "PLAYERTYPE", "ENDPLAYERTYPE");
+				sendingMSG(userUUID, "PLAYERTYPEREC", "ENDPLAYERTYPEREC");
 
 				line = incomingMSG.readLine();
 			} else{
