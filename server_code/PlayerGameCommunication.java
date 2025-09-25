@@ -5,9 +5,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+
 import java.net.Socket;
 
 import org.json.simple.JSONObject;
+
+import com.google.gson.Gson;
 
 public class PlayerGameCommunication{
     private Socket socket;
@@ -16,6 +20,7 @@ public class PlayerGameCommunication{
     private String line;
 	private String playerType = "";
 	private String userUUID;
+	private String[][] checkerBoard;
     public PlayerGameCommunication(Socket socket, String userUUID){
         this.socket = socket;
 		this.userUUID = userUUID;
@@ -29,9 +34,6 @@ public class PlayerGameCommunication{
 
     public void startPlaying(){
         try{
-			int boardRowLength = 0;
-			String nonJsonBoard = "";
-
 			line = incomingMSG.readLine();
 			if (line.equals("GAMESTARTED")){
 				sendingMSG(userUUID, "PLAYERTYPEREC", "ENDPLAYERTYPEREC");
@@ -44,8 +46,6 @@ public class PlayerGameCommunication{
 						line = incomingMSG.readLine();
 					}
 				}
-
-				System.out.println(playerType);
 			} else{
 				System.out.println("Something went wrong with PlayerGameComms: " + line);
 			}
@@ -54,33 +54,58 @@ public class PlayerGameCommunication{
 				sendingMSG("BOARDREC");
 
 				line = incomingMSG.readLine();
-				System.out.println("Player client currently reads: "+ line);
 
 				if(line.equals("STARTBOARD")){
-					boardRowLength = Integer.parseInt(incomingMSG.readLine());
-					nonJsonBoard = incomingMSG.readLine();
-					incomingMSG.readLine(); //to put it at the end of the message
+					int totalRows = Integer.parseInt(incomingMSG.readLine());
+					int totalCols = Integer.parseInt(incomingMSG.readLine());
+					this.checkerBoard = new String[totalRows][totalCols];
+					while(!line.equals("ENDBOARD")){
+						for(String[] row : this.checkerBoard){
+							if((line = incomingMSG.readLine()).equals("STARTROW")){
+								int rowPos = 0;
+								System.out.println("Current playercom line: " + line);
+								while(!((line = incomingMSG.readLine()).equals("ENDROW")) && rowPos < totalCols){
+									row[rowPos] = line;
+									rowPos++;
+								}
+							} else {
+								System.out.println("Something went wrong when trying to translate board on client side: " + line);
+							}
+						}
+						if((line = incomingMSG.readLine()).equals("STARTBOARD")){
+						} else {
+							System.out.println("Error invalid header on reading board system: " + line);
+						}
+					}
+				} else {
+					System.out.println("Error on reading json obj on client side: " + line);
+					break;
 				}
-
-				System.out.println(boardRowLength);
-				System.out.println(nonJsonBoard);
                 
-				// line = incomingMSG.readLine();
-                // if(line.equals("USERRESPONSEREQ")){
-                    
-                // }
+
+				displayBoard(this.checkerBoard);
             }
         } catch (IOException error){
             System.out.println("Error on player communication startPlaying method: " + error);
         }
 
 
+		System.out.println("Player communication end");
 
     }
 
-	public void displayBoard(JSONObject boardJsonObject){
-		
+	private void displayBoard(String[][] board){
+		for(String[] row : board){
+			for(String cell : row){
+				System.out.print(cell + " ");
+			}
+			System.out.println();
+		}
 	}
+
+	// private void processBoard(int totalRows, int totalCols){
+	// 	String[][] processedCheckBoard = new String[totalRows][totalCols];
+	// }
 
     private void sendingMSG(String header){
 		try{
@@ -106,32 +131,4 @@ public class PlayerGameCommunication{
 		}
 	}
 
-
-    /*
-     * 
-     * String[][] arrayBoard = board.renderBoardAsStringArray();
-		try{
-			outputMSG.write("STARTBOARD");
-			outputMSG.newLine();
-			for(String[] row : arrayBoard){
-				for(int colPos = 0; colPos < row.length; colPos++){
-
-					if(colPos == row.length - 1){
-						outputMSG.write(row[colPos]);
-						outputMSG.newLine();
-					} else{
-						outputMSG.write(row[colPos]);
-						outputMSG.write("\t");
-					}
-				}
-				outputMSG.newLine();
-			}
-
-			outputMSG.write("ENDBOARD");
-			outputMSG.newLine();
-			outputMSG.flush();
-		} catch (IOException error){
-			System.out.println("Error on sending status of board to user: " + error);
-		}
-     */
 }

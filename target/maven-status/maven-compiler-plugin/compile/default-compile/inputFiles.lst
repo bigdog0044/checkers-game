@@ -1,12 +1,13 @@
 D:\Documents\Projects\checkers-game\game_code\GameHandler.java
-D:\Documents\Projects\checkers-game\server_code\ServerMain.java
-D:\Documents\Projects\checkers-game\server_code\CreatingUsers.java
-D:\Documents\Projects\checkers-game\game_code\testingCodeWithoutServer.java
 D:\Documents\Projects\checkers-game\server_code\DBUsernameAndPass.java
 D:\Documents\Projects\checkers-game\server_code\PlayerGameCommunication.java
 D:\Documents\Projects\checkers-game\server_code\ServerThread.java
-D:\Documents\Projects\checkers-game\game_code\checkerGameLogic.java
 D:\Documents\Projects\checkers-game\server_code\ClientConnection.java
+D:\Documents\Projects\checkers-game\server_code\SQLServerLogin.java
+D:\Documents\Projects\checkers-game\server_code\ServerMain.java
+D:\Documents\Projects\checkers-game\server_code\CreatingUsers.java
+D:\Documents\Projects\checkers-game\game_code\testingCodeWithoutServer.java
+D:\Documents\Projects\checkers-game\game_code\checkerGameLogic.java
 D:\Documents\Projects\checkers-game\game_code\checkerPieces.java
 D:\Documents\Projects\checkers-game\game_code\CheckerBoard.java
 D:\Documents\Projects\checkers-game\server_code\SettingGamesUp.java

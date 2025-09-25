@@ -12,8 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.json.simple.JSONObject;
-
 import server_code.DBUsernameAndPass;
 
 public class GameHandler{
@@ -55,6 +53,7 @@ public class GameHandler{
 		sendingMSG("GAMESTARTED");
 
 
+		//Used to tell the user what player type they area
 		try{
 
 			line = incomingMSG.readLine();
@@ -74,43 +73,38 @@ public class GameHandler{
 		} catch (IOException error){
 			System.out.println("Error on trying to read playertype header stuff: " + error);
 		}
-
+		
+		//used to handle sending current board to user 
 		//used to start the game session
-		// while(!isGameOver()){
-		// 	System.out.println("this is running");
+		while(!isGameOver()){
+			System.out.println("this is running");
 			
+			try{
+				line = incomingMSG.readLine();
+				System.out.println("GameHandler currently reads: " + line);
+				if (line.equals("BOARDREC")) {
+					sendBoardToUser();
+				} else {
+					System.out.println("Something other than BOARDREC: " + line);
+				}
+			} catch (IOException error){
+				System.out.println(error);
+			}
 
-		// 	//initialises who is going
-		// 	if(playerTurn().equals("player1")){
-		// 		sendingMSG("STARTPLAYER1");
-		// 	} else if (playerTurn().equals("player2")){
-		// 		sendingMSG("STARTPLAYER2");
-		// 	}
+			// sendingMSGWithoutFlush("USERRESPONSEREQ");
+			// sendingMSGWithoutFlush("Please choose from the following options");
+			// sendingMSGWithoutFlush("[1] move piece");
+			// sendingMSGWithoutFlush("[2] quit game");
+			// sendingMSG("ENDMSG");
 
-		// 	try{
-		// 		line = incomingMSG.readLine();
-		// 		System.out.println("GameHandler currently reads: " + line);
-		// 		if (line.equals("BOARDREC")) {
-		// 			sendBoardToUser();
-		// 		}
-		// 	} catch (IOException error){
-		// 		System.out.println(error);
-		// 	}
-
-		// 	// sendingMSGWithoutFlush("USERRESPONSEREQ");
-		// 	// sendingMSGWithoutFlush("Please choose from the following options");
-		// 	// sendingMSGWithoutFlush("[1] move piece");
-		// 	// sendingMSGWithoutFlush("[2] quit game");
-		// 	// sendingMSG("ENDMSG");
-
-		// 	//int userResponse;
-		// 	//userResponse = incomingMSG.read();
+			//int userResponse;
+			//userResponse = incomingMSG.read();
 
 
 			
 			
 
-		// }
+		}
 
 
 		//informs the players the game is now over
@@ -218,12 +212,16 @@ public class GameHandler{
 	 * used to send the board status to the user
 	 */
 	private void sendBoardToUser(){
-		String boardStrRowLength = Integer.toString(board.returnRowLen());
-		JSONObject boardJsonObject = board.convertingBoardToJSON();
-		
 		sendingMSGWithoutFlush("STARTBOARD");
-		sendingMSGWithoutFlush(boardStrRowLength);
-		sendingMSGWithoutFlush(boardJsonObject.toJSONString());
+		sendingMSGWithoutFlush(String.valueOf(board.returnRowLen()));
+		sendingMSGWithoutFlush(String.valueOf(board.returnColLen()));
+		for(String[] row : board.renderBoardAsStringArray()){
+			sendingMSGWithoutFlush("STARTROW");
+			for (String value : row){
+				sendingMSGWithoutFlush(value);
+			}
+			sendingMSGWithoutFlush("ENDROW");
+		}
 		sendingMSG("ENDBOARD");
 	}
 

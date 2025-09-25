@@ -1,9 +1,9 @@
 # checkers-game
 
-# information about spefic files and overall game
+# information about specfic files and overall game
 
 Within the folder server code, the following files carry out the following tasks:
-- Server mainn handles incoming connections
+- Server main handles incoming connections
 - server thread manages client-specific communication
 
 
@@ -72,3 +72,4 @@ key for requests
 - PLAYERTYPEREC / ENDPLAYERTYPEREC - used to ask server what status is the current player
 - PLAYERTYPE - used by the server to respond to the client about what player type they are
 - ENDPLAYERTYPE - used to state that its the end of the request
+- STARTROW/ENDROW - used to state the start and end of a row within a board

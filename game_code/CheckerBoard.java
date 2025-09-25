@@ -1,8 +1,6 @@
 package game_code;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
+import com.google.gson.Gson;
 class InvalidPiece extends Exception{
     public InvalidPiece(String value){
         super(value);
@@ -56,6 +54,18 @@ public class CheckerBoard {
     public int returnRowLen(){return this.board[0].length;}
     public int returnColLen(){return this.board[1].length;}
 
+    /*
+     * used to work out the amount of rows in the board
+     * @return total amount of rows within the
+     */
+    public int totalBoardLen(){
+        int total = 0;
+        for(int[] row : board){
+            total += 1;
+        }
+        return total;
+    }
+    
     public int getSquare(int location1, int location2){
         return this.board[location1][location2];
     }
@@ -220,19 +230,12 @@ public class CheckerBoard {
      * be transmitted to the user
      * @return JSONObject of checkerboard
      */
-    public JSONObject convertingBoardToJSON(){
-        JSONObject object = new JSONObject();
-        int rowNum = boardStatus()[0].length;
-        for (int rowPos = 0; rowPos < boardStatus()[0].length; rowPos++){
-            JSONArray boardRow = new JSONArray();
-            for(int value : boardStatus()[rowPos]){
-                boardRow.add(value);
-            }
-            object.put(rowNum, boardRow);
-            rowNum--;
+    public Gson convertingBoardToJSON(){
+        Gson jsonboard = new Gson();
+        String[][] renderedBoard = renderBoardAsStringArray();
+        for(String[] row : renderedBoard){
+            jsonboard.toJson(row);
         }
-
-        System.out.println(object.toJSONString());
-        return object;
+        return jsonboard;
     }
 }
