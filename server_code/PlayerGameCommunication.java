@@ -5,14 +5,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.ObjectInputStream;
-
 import java.net.Socket;
-
-import org.json.simple.JSONObject;
-
-import com.google.gson.Gson;
-
+import java.util.InputMismatchException;
+import java.util.Scanner;
 public class PlayerGameCommunication{
     private Socket socket;
     private BufferedReader incomingMSG;
@@ -54,7 +49,7 @@ public class PlayerGameCommunication{
 				sendingMSG("BOARDREC");
 
 				line = incomingMSG.readLine();
-
+				System.out.println("PlayerGameCommunication reads: " + line);
 				if(line.equals("STARTBOARD")){
 					int totalRows = Integer.parseInt(incomingMSG.readLine());
 					int totalCols = Integer.parseInt(incomingMSG.readLine());
@@ -63,16 +58,18 @@ public class PlayerGameCommunication{
 						for(String[] row : this.checkerBoard){
 							if((line = incomingMSG.readLine()).equals("STARTROW")){
 								int rowPos = 0;
-								System.out.println("Current playercom line: " + line);
 								while(!((line = incomingMSG.readLine()).equals("ENDROW")) && rowPos < totalCols){
 									row[rowPos] = line;
 									rowPos++;
 								}
 							} else {
-								System.out.println("Something went wrong when trying to translate board on client side: " + line);
+								if(!line.equals("ENDBOARD")){
+									System.out.println("Something went wrong when trying to translate board on client side: " + line);
+								}
 							}
 						}
 						if((line = incomingMSG.readLine()).equals("STARTBOARD")){
+							
 						} else {
 							System.out.println("Error invalid header on reading board system: " + line);
 						}
@@ -84,7 +81,47 @@ public class PlayerGameCommunication{
                 
 
 				displayBoard(this.checkerBoard);
-            }
+
+				//used to enable the player to select their next move
+				sendingMSG("USERMOVEDIS");
+
+				try{
+					line = incomingMSG.readLine();
+					if(line.equals("USERRESPONSEREQ")){
+						while(!(line = incomingMSG.readLine()).equals("ENDMSG")){
+							System.out.println(line);
+						}
+					} else {
+						System.out.println("Error on user move on clientside request: " + line);
+					}
+
+
+					Scanner userMoveKeyboardOBJ = new Scanner(System.in);
+					boolean userResponseValid = false;
+					while(!userResponseValid){
+						try{
+							int userMoveSelectionResp = userMoveKeyboardOBJ.nextInt();
+
+							if(userMoveSelectionResp == 1){
+								//do stuff
+								userResponseValid = true;
+							} else if (userMoveSelectionResp == 2){
+								sendingMSG("REQENDGAME");
+								userResponseValid = true;
+							}
+						} catch (InputMismatchException error){
+							System.out.println("Invalid input. Please choose either [1] or [2]");
+						}
+					}
+
+					userMoveKeyboardOBJ.close();
+				} catch (IOException error){
+					System.out.println("Error on user move on clientside request: " + error);
+				}
+			}
+
+			System.out.println("PlayerCommunication has ended there loop");
+			
         } catch (IOException error){
             System.out.println("Error on player communication startPlaying method: " + error);
         }
@@ -101,6 +138,10 @@ public class PlayerGameCommunication{
 			}
 			System.out.println();
 		}
+	}
+
+	private void userMoveHandler(){
+
 	}
 
 	// private void processBoard(int totalRows, int totalCols){

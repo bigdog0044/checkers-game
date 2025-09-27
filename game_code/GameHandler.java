@@ -78,10 +78,10 @@ public class GameHandler{
 		//used to start the game session
 		while(!isGameOver()){
 			System.out.println("this is running");
-			
+			System.out.println("GameHandler reads: " + line);
 			try{
 				line = incomingMSG.readLine();
-				System.out.println("GameHandler currently reads: " + line);
+				
 				if (line.equals("BOARDREC")) {
 					sendBoardToUser();
 				} else {
@@ -91,11 +91,28 @@ public class GameHandler{
 				System.out.println(error);
 			}
 
-			// sendingMSGWithoutFlush("USERRESPONSEREQ");
-			// sendingMSGWithoutFlush("Please choose from the following options");
-			// sendingMSGWithoutFlush("[1] move piece");
-			// sendingMSGWithoutFlush("[2] quit game");
-			// sendingMSG("ENDMSG");
+			//used to inform the user the options they can choose
+			try{
+				line = incomingMSG.readLine();
+				if(line.equals("USERMOVEDIS")){
+					sendingMSGWithoutFlush("USERRESPONSEREQ");
+					sendingMSGWithoutFlush("Please choose from the following options");
+					sendingMSGWithoutFlush("[1] move piece");
+					sendingMSGWithoutFlush("[2] quit game");
+					sendingMSG("ENDMSG");
+				} else {
+					System.out.println("Error on user move request: " + line);
+				}
+
+				line = incomingMSG.readLine();
+				System.out.println("GameHandler reads: " + line);
+				if(line.equals("REQENDGAME")){
+					closeGameHandler();
+					break; //exits out of the loop
+				}
+			} catch (IOException error){
+				System.out.println("Error on reading user move request: " + error);
+			}
 
 			//int userResponse;
 			//userResponse = incomingMSG.read();
@@ -105,8 +122,7 @@ public class GameHandler{
 			
 
 		}
-
-
+		
 		//informs the players the game is now over
 		sendingMSG("ENDGAME");
 		
@@ -185,10 +201,11 @@ public class GameHandler{
 	 private boolean isGameOver(){
 		 try{
 	
-			 String sqlQuery = "SELECT * FROM `gameinfo` WHERE owner_game_ID=? AND gameOver=?;";
+			 String sqlQuery = "SELECT * FROM `gameinfo` WHERE `owner_game_ID`=? AND `gameOver`=? AND `game_ID`=?";
 			 PreparedStatement preparedSql = connection.prepareStatement(sqlQuery);
 			 preparedSql.setString(1, this.gameOwnerID);
 			 preparedSql.setBoolean(2, true);
+			 preparedSql.setString(3,this.gameID);
 			 ResultSet result = preparedSql.executeQuery();
 
 			 /*
@@ -281,5 +298,33 @@ public class GameHandler{
 		} catch(IOException error){
 			System.out.println("Error on sending msg in gamehandler: " + error);
 		}
+	}
+
+	//these methods ensure that the gamehandler closes properly
+
+	private void closeGameHandler(){
+		gameOverTableUpdate();
+
+		try{
+			if(this.connection != null){
+				this.connection.close();
+			}
+		} catch (SQLException error){
+			System.out.println("Error on closing gamehandler: " + error);
+		}
+	}
+
+	private void gameOverTableUpdate(){
+		try{
+			String sqlStatement = "UPDATE `gameinfo` SET `gameOver`=? WHERE `owner_game_ID` = ? AND `game_ID` = ?;";
+			PreparedStatement preparedSqlStatement = connection.prepareStatement(sqlStatement);
+			preparedSqlStatement.setBoolean(1, true);
+			preparedSqlStatement.setString(2, this.gameOwnerID);
+			preparedSqlStatement.setString(3,this.gameID);
+			preparedSqlStatement.executeUpdate();
+		} catch (SQLException error){
+			System.out.println("Error on gameOverTabeUpdate method: " + error);
+	}
+
 	}
 }

@@ -68,8 +68,11 @@ key for requests
 - STARTPLAYER1 / STARTPLAYER2  - used to inform client that the checker game has officially started
 - ENDPLAYER1 / ENDPLAYER2  - used to inform client that the client turn is over
 - ENDGAME - used to inform the client that the checker game is now over
+- REQENDGAME - used from the client to request that their session is ended
 - GAMESTARTED - used to inform client that game has started
 - PLAYERTYPEREC / ENDPLAYERTYPEREC - used to ask server what status is the current player
 - PLAYERTYPE - used by the server to respond to the client about what player type they are
 - ENDPLAYERTYPE - used to state that its the end of the request
 - STARTROW/ENDROW - used to state the start and end of a row within a board
+- USERMOVEREQ - used to inform the server that the user wants to make a request on their specific move
+- USERMOVEDIS - displays a message related to the user move system
