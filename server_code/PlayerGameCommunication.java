@@ -68,6 +68,8 @@ public class PlayerGameCommunication{
 								}
 							}
 						}
+
+						//this does something but i'm not able to work out exactly what it does.....probably something copilot put in without me knowing
 						if((line = incomingMSG.readLine()).equals("STARTBOARD")){
 							
 						} else {
@@ -114,7 +116,7 @@ public class PlayerGameCommunication{
 						}
 					}
 
-					userMoveKeyboardOBJ.close();
+					//userMoveKeyboardOBJ.close();
 				} catch (IOException error){
 					System.out.println("Error on user move on clientside request: " + error);
 				}

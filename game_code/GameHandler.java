@@ -107,7 +107,7 @@ public class GameHandler{
 				line = incomingMSG.readLine();
 				System.out.println("GameHandler reads: " + line);
 				if(line.equals("REQENDGAME")){
-					closeGameHandler();
+					gameOverTableUpdate();
 					break; //exits out of the loop
 				}
 			} catch (IOException error){
@@ -302,17 +302,17 @@ public class GameHandler{
 
 	//these methods ensure that the gamehandler closes properly
 
-	private void closeGameHandler(){
-		gameOverTableUpdate();
+	// private void closeGameHandler(){
+	// 	gameOverTableUpdate();
 
-		try{
-			if(this.connection != null){
-				this.connection.close();
-			}
-		} catch (SQLException error){
-			System.out.println("Error on closing gamehandler: " + error);
-		}
-	}
+	// 	try{
+	// 		if(this.connection != null){
+	// 			this.connection.close();
+	// 		}
+	// 	} catch (SQLException error){
+	// 		System.out.println("Error on closing gamehandler: " + error);
+	// 	}
+	// }
 
 	private void gameOverTableUpdate(){
 		try{
