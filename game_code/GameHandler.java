@@ -81,46 +81,26 @@ public class GameHandler{
 			System.out.println("GameHandler reads: " + line);
 			try{
 				line = incomingMSG.readLine();
-				
-				if (line.equals("BOARDREC")) {
-					sendBoardToUser();
-				} else {
-					System.out.println("Something other than BOARDREC: " + line);
+
+				switch(line){
+					case "BOARDREC":
+						sendBoardToUser();
+						break;
+					case "USERMOVEDIS":
+						sendingMSGWithoutFlush("USERRESPONSEREQ");
+						sendingMSGWithoutFlush("Please choose from the following options");
+						sendingMSGWithoutFlush("[1] move piece");
+						sendingMSGWithoutFlush("[2] quit game");
+						sendingMSG("ENDMSG");
+						break;
+					case "REQENDGAME":
+						gameOverTableUpdate();
+						break;
 				}
+				
 			} catch (IOException error){
 				System.out.println(error);
 			}
-
-			//used to inform the user the options they can choose
-			try{
-				line = incomingMSG.readLine();
-				if(line.equals("USERMOVEDIS")){
-					sendingMSGWithoutFlush("USERRESPONSEREQ");
-					sendingMSGWithoutFlush("Please choose from the following options");
-					sendingMSGWithoutFlush("[1] move piece");
-					sendingMSGWithoutFlush("[2] quit game");
-					sendingMSG("ENDMSG");
-				} else {
-					System.out.println("Error on user move request: " + line);
-				}
-
-				line = incomingMSG.readLine();
-				System.out.println("GameHandler reads: " + line);
-				if(line.equals("REQENDGAME")){
-					gameOverTableUpdate();
-					break; //exits out of the loop
-				}
-			} catch (IOException error){
-				System.out.println("Error on reading user move request: " + error);
-			}
-
-			//int userResponse;
-			//userResponse = incomingMSG.read();
-
-
-			
-			
-
 		}
 		
 		//informs the players the game is now over

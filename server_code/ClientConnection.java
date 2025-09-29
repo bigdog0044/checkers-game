@@ -76,7 +76,6 @@ public class ClientConnection {
             int userResponse = 0;
             while(userResponse != 4){
                 try{
-                    System.out.println("UserResponse before input: " + userResponse);
                     userResponse = keyboardOBJ.nextInt();
                     switch(userResponse){
                         case 1:

@@ -105,7 +105,7 @@ public class PlayerGameCommunication{
 							int userMoveSelectionResp = userMoveKeyboardOBJ.nextInt();
 
 							if(userMoveSelectionResp == 1){
-								//do stuff
+								userMoveHandler();
 								userResponseValid = true;
 							} else if (userMoveSelectionResp == 2){
 								sendingMSG("REQENDGAME");
